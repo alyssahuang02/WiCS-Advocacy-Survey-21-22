@@ -284,7 +284,7 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
                     fgli_filter, class_year_filter, school_filter, concentration_filter)
     columnOptions = []
     for choice in ANSWER_OPTIONS:
-        columnOptions.append(dff[dff['Q13'].str.contains(
+        columnOptions.append(dff[dff['Q10'].str.contains(
             choice, na=False)])
             
     # names is used for labelling
@@ -318,7 +318,7 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
                 if x == label:
                     votes[0] += 1
 
-            total = dff[dff[axis] == label]['Q13'].count()
+            total = dff[dff[axis] == label]['Q10'].count()
 
             votes[1] = total - votes[0]
             figSub.add_trace(go.Pie(labels=['Yes', 'No'], values=votes, textinfo='none',
@@ -337,7 +337,7 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
         return C.EMPTY_FIGURE
     # plot titles
     figSub.update_layout(
-        title='Question 13',
+        title='Question 10',
         font=dict(
             family="Courier New, monospace",
             size=15,
