@@ -18,6 +18,13 @@ DATETIME_COL[DATETIME_COL.isna()] = pd.to_datetime(CLEAN_DF['Q2'][DATETIME_COL.i
 CLEAN_DF['Q2_DT'] = DATETIME_COL
 CLEAN_DF = CLEAN_DF[(datetime(2021, 9, 1) <= CLEAN_DF['Q2_DT']) & (CLEAN_DF['Q2_DT'] <= datetime(2026, 8, 31))]
 
+mapping = {'6':'Somewhat agree', '5':'Agree', '3':'Somewhat disagree', '7':'Strongly agree',
+       '1':'Strongly disagree', '4':'Neither agree nor disagree', '2':'Disagree'}
+col = ['Q8_1','Q8_2','Q8_3', 'Q9_1', 'Q9_2', 'Q9_3', 'Q9_4', 'Q9_5', 
+      'Q10', 'Q11_1', 'Q11_2', 'Q11_3', 'Q12' ]
+
+CLEAN_DF[col] = CLEAN_DF[col].apply(lambda x: x.replace(mapping))
+
 # Filter methods
 
 def filter_gender(df, c):

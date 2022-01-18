@@ -1,7 +1,7 @@
 # CONSTANTS
 
 # Minimum sample size
-MIN_SAMPLE_SIZE = 5
+MIN_SAMPLE_SIZE = 3
 
 # Drop columns
 DROP_COLUMNS = ['StartDate', 'EndDate', 'Status', 'Progress', 'Duration (in seconds)', 'Finished', 'RecordedDate', 'ResponseId', 'DistributionChannel', 'UserLanguage']
