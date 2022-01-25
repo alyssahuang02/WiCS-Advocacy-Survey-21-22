@@ -14,10 +14,6 @@ import dash_bootstrap_components as dbc
 
 
 # constants
-# column titles with formatting
-COLUMN_TITLES = ['', 'For an <br> academic letter of <br> recommendation <br> <br>', 'To inquire <br> about research <br> opportunities <br> <br>',
-                 'To inquire <br> about career <br> opportunities <br> <br>', 'To inquire <br> about advice for <br> my concentration <br> <br>']
-
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 # app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -129,19 +125,6 @@ app.layout = html.Div([
                             id='filter-concentration-dropdown',
                             options=[{'label': i, 'value': i}
                                      for i in C.CONCENTRATION_FILTER_OPTIONS],
-                            value='All',
-                            clearable=False
-                        )
-                    ],
-                        style={'width': '40%', 'display': 'inline-block', 'margin': 15})
-                ]),
-                html.Div([
-                    html.Div([
-                        html.P('Disability'),
-                        dcc.Dropdown(
-                            id='filter-disability-dropdown',
-                            options=[{'label': i, 'value': i}
-                                     for i in C.DISABILITY_FILTER_OPTIONS],
                             value='All',
                             clearable=False
                         )
