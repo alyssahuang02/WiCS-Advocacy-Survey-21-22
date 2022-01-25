@@ -171,7 +171,6 @@ def calculate_percentages(dff, axis, y_data, QUESTION_ID):
                 value = round(count * 100 / total, 2)
             row.append(value)
         data.append(row)
-    print(data)
     return data
 
 @app.callback(
@@ -277,7 +276,6 @@ def update_graph(axis, statement, gender_filter, race_ethnicity_filter, bgltq_fi
     class_year_filter, school_filter, concentration_filter):
     
     QUESTION_ID = CATEGORIES_MAPPING[statement]
-    print(QUESTION_ID)
 
     dff = filter_df(D.AXIS_DF[axis], gender_filter, race_ethnicity_filter, bgltq_filter,
         fgli_filter, class_year_filter, school_filter, concentration_filter)
