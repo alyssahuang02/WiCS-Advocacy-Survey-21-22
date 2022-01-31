@@ -1,3 +1,5 @@
+# CHANGE TO BAR GRAPH
+
 # also change to red, yellow, green
 # collapse the answer choices (formatting)
 
