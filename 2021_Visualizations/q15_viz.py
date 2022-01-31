@@ -1,3 +1,7 @@
+# format better, make green, add title, show on same line
+
+# potentially do (at time of write up): see which ones are most interesting/have best results
+
 import constants as C
 import dataframe_init as D
 
