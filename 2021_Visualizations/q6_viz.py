@@ -1,4 +1,6 @@
 # change to gradient
+# ["rgb(10,54,34)", "rgb(20,108,67)", "rgb(71,159,118)", "rgb(162,207,187)"]
+# ^ gradient used last year (but it's missing one)
 
 import constants as C
 import dataframe_init as D
