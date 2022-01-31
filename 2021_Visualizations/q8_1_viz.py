@@ -1,3 +1,5 @@
+# compile into q8, q9, q11
+
 import constants as C
 import dataframe_init as D
 
