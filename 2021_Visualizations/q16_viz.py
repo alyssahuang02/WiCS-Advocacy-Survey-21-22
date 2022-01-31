@@ -1,3 +1,6 @@
+# also change to red, yellow, green
+# collapse the answer choices (formatting)
+
 import constants as C
 import dataframe_init as D
 
