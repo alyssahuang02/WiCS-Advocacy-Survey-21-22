@@ -1,3 +1,5 @@
+# feedback: change to pie chart with 5 categories (CS, 4 schools)
+
 import constants as C
 import dataframe_init as D
 
