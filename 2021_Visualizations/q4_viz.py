@@ -17,6 +17,17 @@ from datetime import datetime
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
+CS = ["Computer Science"]
+SEAS = ["Applied Mathematics", "Biomedical Engineering", "Electrical Engineering", "Engineering Sciences", "Environmental Science and Engineering", "Mechanical Engineering"]
+Science = ["Astrophysics", "Chemical and Physical Biology", "Chemistry", "Chemistry and Physics", "Earth and Planetary Sciences", "Environmental Science and Public Policy", 
+    "Human Developmental and Regenerative Biology", "Human Evolutionary Biology", "Integrative Biology", "Mathematics", "Molecular and Cellular Biology", "Neuroscience",
+    "Physics", "Psychology", "Statistics"]
+Arts_and_Humanities = ["Art, Film, and Visual Studies", "Classics", "Comparative Literature", "East Asian Studies", "English", "Folklore and Mythology", "Germanic Languages and Literatures",
+    "History & Literature", "History of Art and Architecture", "Linguistics", "Music", "Near Eastern Languages and Civilizations", "Philosophy", "Religion, Comparative Study of",
+    "Romance Languages and Literatures", "Slavic Languages and Literatures", "South Asian Studies", "Theater, Dance & Media"]
+Social_Science = ["African and African American Studies", "Anthropology", "East Asian Studies", "Economics", "Government", "History", "History and Science", "Psychology", "Social Studies",
+    "Sociology", "Women, Gender, and Sexuality, Studies of"]
+
 legend_labels = ['African and African American Studies', 'Anthropology', 'Applied Mathematics', 'Art, Film, and Visual Studies', 'Astrophysics',
     'Biomedical Engineering', 'Chemical and Physical Biology', 'Chemistry', 'Chemistry and Physics', 'Classics', 'Comparative Literature', 'Computer Science',
     'Earth and Planetary Sciences', 'East Asian Studies', 'Economics', 'Electrical Engineering', 'Engineering Sciences', 'English', 'Environmental Science and Engineering',

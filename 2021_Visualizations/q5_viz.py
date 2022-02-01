@@ -329,8 +329,8 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
                                     hoverinfo='label+percent',
                                     marker={
                 'colors': [
-                                    'rgb(141, 160, 203)',
-                                    'rgb(203, 213, 232)']}), row=rowNum, col=colNum)
+                                    'rgb(71,159,118)',
+                                    'rgb(233,236,239)']}), row=rowNum, col=colNum)
 
             colNum += 1
         rowNum += 1
