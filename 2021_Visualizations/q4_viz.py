@@ -1,21 +1,24 @@
-# feedback: change to pie chart with 5 categories (CS, 4 schools)
-
 import constants as C
 import dataframe_init as D
 
 import dash
-import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import plotly.express as px
 import plotly.graph_objects as go
-import textwrap
-
+from plotly.subplots import make_subplots
 import pandas as pd
 from datetime import datetime
+import dash_bootstrap_components as dbc
 
+
+# constants
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+# app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+q_id = 'Q4'
 
 CS = ["Computer Science"]
 SEAS = ["Applied Mathematics", "Biomedical Engineering", "Electrical Engineering", "Engineering Sciences", "Environmental Science and Engineering", "Mechanical Engineering"]
@@ -28,31 +31,14 @@ Arts_and_Humanities = ["Art, Film, and Visual Studies", "Classics", "Comparative
 Social_Science = ["African and African American Studies", "Anthropology", "East Asian Studies", "Economics", "Government", "History", "History and Science", "Psychology", "Social Studies",
     "Sociology", "Women, Gender, and Sexuality, Studies of"]
 
-legend_labels = ['African and African American Studies', 'Anthropology', 'Applied Mathematics', 'Art, Film, and Visual Studies', 'Astrophysics',
-    'Biomedical Engineering', 'Chemical and Physical Biology', 'Chemistry', 'Chemistry and Physics', 'Classics', 'Comparative Literature', 'Computer Science',
-    'Earth and Planetary Sciences', 'East Asian Studies', 'Economics', 'Electrical Engineering', 'Engineering Sciences', 'English', 'Environmental Science and Engineering',
-    'Environmental Science and Public Policy', 'Folklore and Mythology', 'Germanic Languages and Literatures', 'Government', 'History', 'History and Literature',
-    'History and Science', 'History of Art and Architecture', 'Human Developmental and Regenerative Biology', 'Human Evolutionary Biology',
-    'Integrative Biology', 'Linguistics', 'Mathematics', 'Mechanical Engineering', 'Molecular and Cellular Biology', 'Music', 'Near Eastern Languages and Civilizations',
-    'Neuroscience', 'Philosophy', 'Physics', 'Psychology', 'Religion, Comparative Study of', 'Romance Languages and Literatures', 'Slavic Languages and Literatures',
-    'Social Studies', 'Sociology', 'South Asian Studies', 'Special Concentration', 'Statistics', 'Theater, Dance, & Media', 'Women, Gender, and Sexuality, Study of', 'None']
-bar_colors = ['rgba(102, 0, 0, 0.8)', 'rgba(204, 0, 0, 0.8)', 'rgba(234, 153, 153, 0.8)', 'rgba(246, 216, 216, 0.8)', 'rgba(156, 89, 0, 0.8)', 'rgba(226, 139, 26, 0.8)', 'rgba(238, 185, 115, 0.8)',
-    'rgba(236, 246, 134, 0.8)', 'rgba(224, 247, 0, 0.8)', 'rgba(144, 158, 6, 0.8)', 'rgba(120, 128, 42, 0.8)', 'rgba(167, 251, 168, 0.8)', 'rgba(96, 206, 97, 0.8)', 'rgba(0, 255, 2, 0.8)',
-    'rgba(20, 176, 21, 0.8)', 'rgba(11, 98, 12, 0.8)', 'rgba(217, 217, 217, 0.8)', 'rgba(164, 194, 244, 0.8)', 'rgba(60, 120, 216, 0.8)', 'rgba(28, 69, 135, 0.8)',
-    'rgba(156, 99, 232, 0.8)', 'rgba(126, 68, 145, 0.8)', 'rgba(88, 32, 164, 0.8)', 'rgba(45, 0, 123, 0.8)', 'rgba(25, 0, 68, 0.8)', 'rgba(226, 163, 242, 0.8)',
-    'rgba(221, 123, 246, 0.8)', 'rgba(203, 82, 234, 0.8)', 'rgba(195, 34, 236, 0.8)', 'rgba(156, 0, 195, 0.8)', 'rgba(125, 50, 144, 0.8)', 'rgba(87, 32, 101, 0.8)',
-    'rgba(53, 28, 59, 0.8)', 'rgba(41, 3, 42, 0.8)', 'rgba(213, 115, 210, 0.8)', 'rgba(213, 48, 208, 0.8)', 'rgba(169, 0, 164, 0.8)',
-    'rgba(199, 94, 137, 0.8)', 'rgba(240, 47, 126, 0.8)', 'rgba(116, 5, 51, 0.8)', 'rgba(59, 2, 25, 0.8)', 'rgba(0, 0, 0, 0.8)', 'rgba(30, 7, 7, 0.8)', 'rgba(59, 28, 28, 0.8)',
-    'rgba(53, 39, 39, 0.8)', 'rgba(53, 39, 39, 0.8)', 'rgba(53, 39, 39, 0.8)', 'rgba(120, 120, 120, 0.8)', 'rgba(120, 120, 120, 0.8)', 'rgba(193, 189, 189, 0.8)',
-    'rgba(229, 224, 224, 0.8)']
-    
-QUESTION_ID = 'Q4'
+categories = {'CS':CS, 'SEAS':SEAS, 'Science':Science, 'Arts and Humanities':Arts_and_Humanities, 'Social Science':Social_Science}
 
 app.layout = html.Div([
+
     html.Div([
         html.H1('Explore'),
         html.P('Explore the experiences of Harvard undergraduate students with computer science, as they relate to gender and other aspects of identity.')
-    ], style={'width': '30%', 'display': 'inline-table', 'margin-top' : 60, 'margin-left' : 50}),
+    ], style={'width': '30%', 'display': 'inline-table', 'margin-top': 60, 'margin-left': 50}),
     html.Div([
         html.H4('Split by'),
         html.Div([
@@ -63,91 +49,100 @@ app.layout = html.Div([
                 clearable=False
             )
         ])
-    ], style={'width': '20%', 'display': 'inline-table', 'margin-top' : 20, 'margin-left' : 50}),
+    ], style={'width': '20%', 'display': 'inline-table', 'margin-top': 20, 'margin-left': 50}),
     html.Div([
         html.H4('Filter'),
-        dbc.Button("Select Filters", color="info", id="open-filter", className="mr-1"),
+        dbc.Button("Select Filters", color="info",
+                   id="open-filter", className="mr-1"),
         dbc.Modal(
             [
                 dbc.ModalHeader("Filter Options"),
-                dbc.ModalBody("You may only select up to two filters at a time, and you may not filter on the basis of your selected split."),
+                dbc.ModalBody(
+                    "You may only select up to two filters at a time, and you may not filter on the basis of your selected split."),
                 html.Div([
                     html.Div([
                         html.P('Gender'),
                         dcc.Dropdown(
                             id='filter-gender-dropdown',
-                            options=[{'label': i, 'value': i} for i in C.GENDER_FILTER_OPTIONS],
+                            options=[{'label': i, 'value': i}
+                                     for i in C.GENDER_FILTER_OPTIONS],
                             value='All',
                             clearable=False
                         )
                     ],
-                    style={'width': '40%', 'display': 'inline-block', 'margin' : 15}),
+                        style={'width': '40%', 'display': 'inline-block', 'margin': 15}),
                     html.Div([
                         html.P('Race/Ethnicity'),
                         dcc.Dropdown(
                             id='filter-race-ethnicity-dropdown',
-                            options=[{'label': i, 'value': i} for i in C.RACE_ETHNICITY_FILTER_OPTIONS],
+                            options=[{'label': i, 'value': i}
+                                     for i in C.RACE_ETHNICITY_FILTER_OPTIONS],
                             value='All',
                             clearable=False
                         )
                     ],
-                    style={'width': '40%', 'display': 'inline-block', 'margin' : 15})
+                        style={'width': '40%', 'display': 'inline-block', 'margin': 15})
                 ]),
                 html.Div([
                     html.Div([
                         html.P('BGLTQ+'),
                         dcc.Dropdown(
                             id='filter-bgltq-dropdown',
-                            options=[{'label': i, 'value': i} for i in C.BGLTQ_FILTER_OPTIONS],
+                            options=[{'label': i, 'value': i}
+                                     for i in C.BGLTQ_FILTER_OPTIONS],
                             value='All',
                             clearable=False
                         )
                     ],
-                    style={'width': '40%', 'display': 'inline-block', 'margin' : 15}),
+                        style={'width': '40%', 'display': 'inline-block', 'margin': 15}),
                     html.Div([
                         html.P('First Generation, Low Income (FGLI)'),
                         dcc.Dropdown(
                             id='filter-fgli-dropdown',
-                            options=[{'label': i, 'value': i} for i in C.FGLI_FILTER_OPTIONS],
+                            options=[{'label': i, 'value': i}
+                                     for i in C.FGLI_FILTER_OPTIONS],
                             value='All',
                             clearable=False
                         )
                     ],
-                    style={'width': '40%', 'display': 'inline-block', 'margin' : 15}),
+                        style={'width': '40%', 'display': 'inline-block', 'margin': 15}),
                 ]),
                 html.Div([
                     html.Div([
                         html.P('Class Year'),
                         dcc.Dropdown(
                             id='filter-class-year-dropdown',
-                            options=[{'label': i, 'value': i} for i in C.CLASS_YEAR_FILTER_OPTIONS],
+                            options=[{'label': i, 'value': i}
+                                     for i in C.CLASS_YEAR_FILTER_OPTIONS],
                             value='All',
                             clearable=False
                         )
                     ],
-                    style={'width': '40%', 'display': 'inline-block', 'margin' : 15}),
+                        style={'width': '40%', 'display': 'inline-block', 'margin': 15}),
                     html.Div([
                         html.P('School of Primary Concentration'),
                         dcc.Dropdown(
                             id='filter-school-dropdown',
-                            options=[{'label': i, 'value': i} for i in C.SCHOOL_FILTER_OPTIONS],
+                            options=[{'label': i, 'value': i}
+                                     for i in C.SCHOOL_FILTER_OPTIONS],
                             value='All',
                             clearable=False
                         )
                     ],
-                    style={'width': '40%', 'display': 'inline-block', 'margin' : 15})
+                        style={'width': '40%', 'display': 'inline-block', 'margin': 15})
                 ]),
                 html.Div([
                     html.Div([
                         html.P('Primary Concentration'),
                         dcc.Dropdown(
                             id='filter-concentration-dropdown',
-                            options=[{'label': i, 'value': i} for i in C.CONCENTRATION_FILTER_OPTIONS],
+                            options=[{'label': i, 'value': i}
+                                     for i in C.CONCENTRATION_FILTER_OPTIONS],
                             value='All',
                             clearable=False
                         )
                     ],
-                    style={'width': '40%', 'display': 'inline-block', 'margin' : 15})
+                        style={'width': '40%', 'display': 'inline-block', 'margin': 15})
                 ]),
                 dbc.ModalFooter(
                     dbc.Button("Close", id="close-filter", className="ml-auto")
@@ -156,35 +151,30 @@ app.layout = html.Div([
             id="filter-modal",
             size="lg",
         ),
-        html.P('Filters: None', id='filters-label', style={'font-style' : 'italic'})
-    ], style={'width': '30%', 'display': 'inline-table', 'margin-top' : 20, 'margin-left' : 50}),
-    dcc.Graph(id='visualization')
+        html.P('Filters: None', id='filters-label',
+               style={'font-style': 'italic'})
+    ], style={'width': '30%', 'display': 'inline-table', 'margin-top': 20, 'margin-left': 50}),
+
+
+
+    html.Div(
+        children=[
+            dcc.Graph(id='visualization')
+        ],
+        style={'margin-top': 40, 'margin-right': 90,
+               'justify-content': 'center'}
+    ),
+
 ])
+
 
 def is_sample_size_insufficient(dff, axis):
     # get number of responses per category
-    category_counts = dff[axis].value_counts().reset_index(name='counts')['counts'].tolist()
+    category_counts = dff[axis].value_counts().reset_index(name='counts')[
+        'counts'].tolist()
     # check number of responses per category is greater than minimum sample size
     return any(c < C.MIN_SAMPLE_SIZE for c in category_counts)
 
-def calculate_percentages(dff, axis, y_data):
-    data = []
-    for y_label in y_data:
-        filt_dff = dff[dff[axis] == y_label]
-        eval_counts = []
-        total = 0
-        row = []
-        for eval_label in legend_labels:
-            count = filt_dff[filt_dff[QUESTION_ID] == eval_label].shape[0]
-            eval_counts.append(count)
-            total += count
-        for count in eval_counts:
-            value = 0
-            if total != 0:
-                value = round(count * 100 / total, 2)
-            row.append(value)
-        data.append(row)
-    return data
 
 @app.callback(
     Output('filter-modal', 'is_open'),
@@ -195,6 +185,7 @@ def toggle_modal(n1, n2, is_open):
     if n1 or n2:
         return not is_open
     return is_open
+
 
 @app.callback(
     Output('filter-gender-dropdown', 'disabled'),
@@ -212,14 +203,15 @@ def toggle_modal(n1, n2, is_open):
     Input('filter-class-year-dropdown', 'value'),
     Input('filter-school-dropdown', 'value'),
     Input('filter-concentration-dropdown', 'value'))
-def toggle_filters(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter, 
-    class_year_filter, school_filter, concentration_filter):
+def toggle_filters(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter,
+                   class_year_filter, school_filter, concentration_filter):
     filter_count = 0
     filter_enable_list = [False, False, False, False, False, False, False]
     filter_enable_list[C.VIZ_AXES.index(axis)] = True
     filter_disable_list = filter_enable_list.copy()
 
-    filter_selections = [gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter, class_year_filter, school_filter, concentration_filter]
+    filter_selections = [gender_filter, race_ethnicity_filter, bgltq_filter,
+                         fgli_filter, class_year_filter, school_filter, concentration_filter]
     for i in range(len(filter_selections)):
         if filter_selections[i] == 'All':
             filter_disable_list[i] = (True)
@@ -229,6 +221,7 @@ def toggle_filters(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgl
     if filter_count >= 2:
         return filter_disable_list
     return filter_enable_list
+
 
 @app.callback(
     Output('filter-gender-dropdown', 'value'),
@@ -242,6 +235,7 @@ def toggle_filters(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgl
 def reset_filters(axis):
     return ['All', 'All', 'All', 'All', 'All', 'All', 'All']
 
+
 @app.callback(
     Output('filters-label', 'children'),
     Input('filter-gender-dropdown', 'value'),
@@ -251,20 +245,22 @@ def reset_filters(axis):
     Input('filter-class-year-dropdown', 'value'),
     Input('filter-school-dropdown', 'value'),
     Input('filter-concentration-dropdown', 'value'))
-def set_filters_label(gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter, 
-    class_year_filter, school_filter, concentration_filter):
+def set_filters_label(gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter,
+                      class_year_filter, school_filter, concentration_filter):
     filter_str_list = []
-    filter_selections = [gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter, class_year_filter, school_filter, concentration_filter]
+    filter_selections = [gender_filter, race_ethnicity_filter, bgltq_filter,
+                         fgli_filter, class_year_filter, school_filter, concentration_filter]
     for sel in filter_selections:
         if sel != 'All':
             filter_str_list.append(sel)
-    
+
     if len(filter_str_list) == 0:
         return 'Filters: None'
     return 'Filters: ' + ', '.join(filter_str_list)
 
-def filter_df(df, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter, 
-    class_year_filter, school_filter, concentration_filter):
+
+def filter_df(df, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter,
+              class_year_filter, school_filter, concentration_filter):
     df = D.filter_gender(df, gender_filter)
     df = D.filter_race_ethnicity(df, race_ethnicity_filter)
     df = D.filter_bgltq(df, bgltq_filter)
@@ -273,6 +269,7 @@ def filter_df(df, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filte
     df = D.filter_school(df, school_filter)
     df = D.filter_conc(df, concentration_filter)
     return df
+
 
 @app.callback(
     Output('visualization', 'figure'),
@@ -284,69 +281,61 @@ def filter_df(df, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filte
     Input('filter-class-year-dropdown', 'value'),
     Input('filter-school-dropdown', 'value'),
     Input('filter-concentration-dropdown', 'value'))
-def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter, 
-    class_year_filter, school_filter, concentration_filter):
-    dff = filter_df(D.AXIS_DF[axis], gender_filter, race_ethnicity_filter, bgltq_filter,
-        fgli_filter, class_year_filter, school_filter, concentration_filter)
+def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter,
+                 class_year_filter, school_filter, concentration_filter):
+    # get relevant dataframe according to axis
+    dff = filter_df(D.AXIS_DF[axis], gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter,
+        class_year_filter, school_filter, concentration_filter)
 
-    fig = go.Figure()
-    y_data = dff[axis].unique()[::-1]
-    x_data = calculate_percentages(dff, axis, y_data)
+    unique_categories = dff[axis].unique()
+    category_names = list(dff[axis].unique())
+    
+    new_category = []
+    
+    for c in unique_categories:
+        category_df = dff[dff[axis] == c]
+        new_category.append(category_df)
+ 
+    generateSpecs = [[{"type": "pie"} for _ in new_category]]
+    fig = make_subplots(rows=1, cols=len(new_category),specs = generateSpecs, subplot_titles = category_names)
+    colNum = 1
+   
+    text_annotations=[]
+    text_annotations.append(dict(font=dict(size=14)))
 
-    # return empty plot if there is not enough data (or if figure is not yet implemented)
-    if fig == None or is_sample_size_insufficient(dff, axis):
-        return C.EMPTY_FIGURE
-
-    for row in range(len(x_data)):
-        for col in range(len(x_data[0])):
-            hovertext = str(x_data[row][col]) + '% - ' + legend_labels[col]
-            fig.add_trace(go.Bar(
-                x=[x_data[row][col]], y=[row],
-                orientation='h',
-                hoverinfo='text',
-                hovertext=hovertext,
-                marker=dict(
-                    color=bar_colors[col],
-                    line=dict(color='rgb(248, 248, 249)', width=1)
-                )
-            ))
-
+    for df in new_category: #new category = inc. in colnum
+        cs_num = df[df[q_id].str.contains(categories['CS'], na=False)].shape[0] #filters out yes respondents 
+        no_num = df[~(df[q_id].str.contains('Yes', na=False))].shape[0] #filters our no respondents
+        y_n_values = [cs_num,no_num]
+        fig.add_trace(go.Pie(
+            labels = ['CS', 'SEAS', 'Science', 'Social Science', 'Arts and Humanities'],
+            values = y_n_values,
+            textinfo='none',
+            hoverinfo='label+percent',
+            direction = 'clockwise',
+            sort = False,
+            marker={'colors': ['rgba(102, 0, 0, 0.8)', 'rgba(204, 0, 0, 0.8)', 'rgba(217, 217, 217, 0.8)', 'rgba(60, 120, 216, 0.8)', 'rgba(28, 69, 135, 0.8)']}
+        ), row=1, col=colNum)
+        colNum +=1
     fig.update_layout(
-        xaxis=dict(
-            showgrid=False,
-            showline=False,
-            showticklabels=True,
-            zeroline=False,
-            domain=[0.15, 1]
-        ),
-        yaxis=dict(
-            showgrid=False,
-            showline=False,
-            showticklabels=False,
-            zeroline=False,
-        ),
-        barmode='stack',
-        paper_bgcolor='rgb(248, 248, 255)',
-        plot_bgcolor='rgb(248, 248, 255)',
-        margin=dict(l=0, r=0, t=140, b=80),
-        showlegend=False
+        title='Have you ever been involved in a student organization at Harvard relating to computer science, engineering, or technology?',
+        annotations=text_annotations,
+        height=300,
+        margin=dict(l=0, r=0, t=70, b=30),
+        legend=dict(
+            yanchor="bottom",
+            y=1.02,
+            xanchor="left",
+            x=1.02,
+            itemclick=False,
+            itemdoubleclick=False
+        )
     )
 
-    annotations = []
-    for i in range(len(y_data)):
-        # labeling the y-axis
-        split_label = textwrap.wrap(str(y_data[i]), width=18)
-        annotations.append(dict(xref='paper', yref='y',
-                                x=0.13, y=i,
-                                xanchor='right',
-                                text='<br>'.join(split_label),
-                                font=dict(family='Arial', size=14,
-                                          color='rgb(67, 67, 67)'),
-                                showarrow=False, align='right'))
-
-    split_text = textwrap.wrap(D.QUESTION_KEY[QUESTION_ID][0], width=100)
-    fig.update_layout(annotations=annotations, title_text='<br>'.join(split_text))
-
+    # check for errors
+    if fig == None or is_sample_size_insufficient(dff, axis):
+        print("ERROR")
+    
     return fig
 
 
