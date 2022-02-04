@@ -15,23 +15,11 @@ import dash_bootstrap_components as dbc
 
 # constants
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+QUESTION_ID = 'Q14'
 
 # app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-q_id = 'Q4'
 
-CS = ["Computer Science"]
-SEAS = ["Applied Mathematics", "Biomedical Engineering", "Electrical Engineering", "Engineering Sciences", "Environmental Science and Engineering", "Mechanical Engineering"]
-Science = ["Astrophysics", "Chemical and Physical Biology", "Chemistry", "Chemistry and Physics", "Earth and Planetary Sciences", "Environmental Science and Public Policy", 
-    "Human Developmental and Regenerative Biology", "Human Evolutionary Biology", "Integrative Biology", "Mathematics", "Molecular and Cellular Biology", "Neuroscience",
-    "Physics", "Psychology", "Statistics"]
-Arts_and_Humanities = ["Art, Film, and Visual Studies", "Classics", "Comparative Literature", "East Asian Studies", "English", "Folklore and Mythology", "Germanic Languages and Literatures",
-    "History & Literature", "History of Art and Architecture", "Linguistics", "Music", "Near Eastern Languages and Civilizations", "Philosophy", "Religion, Comparative Study of",
-    "Romance Languages and Literatures", "Slavic Languages and Literatures", "South Asian Studies", "Theater, Dance & Media"]
-Social_Science = ["African and African American Studies", "Anthropology", "East Asian Studies", "Economics", "Government", "History", "History and Science", "Psychology", "Social Studies",
-    "Sociology", "Women, Gender, and Sexuality, Studies of"]
-
-categories = {'CS':CS, 'SEAS':SEAS, 'Science':Science, 'Arts and Humanities':Arts_and_Humanities, 'Social Science':Social_Science}
 
 app.layout = html.Div([
 
@@ -283,71 +271,52 @@ def filter_df(df, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filte
     Input('filter-concentration-dropdown', 'value'))
 def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter,
                  class_year_filter, school_filter, concentration_filter):
-    # get relevant dataframe according to axis
-    dff = filter_df(D.AXIS_DF[axis], gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter,
-        class_year_filter, school_filter, concentration_filter)
 
-    unique_categories = dff[axis].unique()
-    category_names = list(dff[axis].unique())
-    
-    new_category = []
-    
-    for c in unique_categories:
-        category_df = dff[dff[axis] == c]
-        new_category.append(category_df)
- 
-    generateSpecs = [[{"type": "pie"} for _ in new_category]]
-    fig = make_subplots(rows=1, cols=len(new_category),specs = generateSpecs, subplot_titles = category_names)
+    # extract relevant data
+    dff = filter_df(D.AXIS_DF[axis], gender_filter, race_ethnicity_filter, bgltq_filter,
+                    fgli_filter, class_year_filter, school_filter, concentration_filter)
+            
+    # names is used for labelling
+    names = list(dff[axis].unique())
+
+    # initialize subplot
+    generateSpecs = [[{"type": "pie"} for _ in names]]
+    figSub = make_subplots(rows=1, cols=len(names), specs=generateSpecs, subplot_titles=(names))
+
     colNum = 1
-   
-    text_annotations=[]
-    text_annotations.append(dict(font=dict(size=14)))
+    for label in names:
+        votes = [0, 0]
 
-    cs_num = 0
-    seas_num = 0
-    science_num = 0
-    aah_num = 0
-    ss_num = 0
-    values_list = [cs_num, seas_num, science_num, aah_num, ss_num]
+        # TODO: Clean/make more abstract
+        for x in dff[dff[axis] == label][QUESTION_ID]:
+            if x == 'Yes':
+                votes[0] += 1
 
-    for df in new_category: #new category = inc. in colnum
-        for el in df[q_id]:
-            index = 0
-            for key in categories:
-                if el in categories[key]:
-                    values_list[index] += 1
-                index += 1
+        total = dff[dff[axis] == label][QUESTION_ID].count()
 
-        fig.add_trace(go.Pie(
-            labels = ['CS', 'SEAS', 'Science', 'Arts and Humanities', 'Social Science'],
-            values = values_list,
-            textinfo='none',
-            hoverinfo='label+percent',
-            direction = 'clockwise',
-            sort = False,
-            marker={'colors': ['rgba(102, 0, 0, 0.8)', 'rgba(204, 0, 0, 0.8)', 'rgba(217, 217, 217, 0.8)', 'rgba(60, 120, 216, 0.8)', 'rgba(28, 69, 135, 0.8)']}
-        ), row=1, col=colNum)
-        colNum +=1
-    fig.update_layout(
-        title='Before attending Harvard, which of the following concentrations did you consider pursuing? Note that results to this question are grouped by school.',
-        annotations=text_annotations,
-        height=300,
-        margin=dict(l=0, r=0, t=70, b=30),
-        legend=dict(
-            yanchor="bottom",
-            y=1.02,
-            xanchor="left",
-            x=1.02,
-            itemclick=False,
-            itemdoubleclick=False
-        )
-    )
+        votes[1] = total - votes[0]
+        figSub.add_trace(go.Pie(labels=['Yes', 'No'], values=votes, textinfo='none',
+                                hoverinfo='label+percent',
+                                marker={
+            'colors': [
+                                'rgb(141, 160, 203)',
+                                'rgb(203, 213, 232)']}), row=1, col=colNum)
+        colNum += 1
 
     # check for errors
-    if fig == None or is_sample_size_insufficient(dff, axis):
+    if figSub == None or is_sample_size_insufficient(dff, axis):
         print("ERROR")
-    
-    return fig
+        return C.EMPTY_FIGURE
+    # plot titles
+    figSub.update_layout(
+        title=QUESTION_ID,
+        font=dict(
+            family="Courier New, monospace",
+            size=15,
+            color="RebeccaPurple"
+        )
+    )
+    return figSub
 
 
 if __name__ == '__main__':
