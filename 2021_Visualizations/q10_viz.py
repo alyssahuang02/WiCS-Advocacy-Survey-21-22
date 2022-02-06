@@ -17,6 +17,8 @@ import dash_bootstrap_components as dbc
 
 QUESTION_ID = 'Q10'
 
+
+
 # constants
 # column titles with formatting
 COLUMN_TITLES = ['', 'For an <br> academic letter of <br> recommendation <br> <br>', 'To inquire <br> about research <br> opportunities <br> <br>',
@@ -38,6 +40,7 @@ app.layout = html.Div([
         html.H1('Explore'),
         html.P('Explore the experiences of Harvard undergraduate students with computer science, as they relate to gender and other aspects of identity.')
     ], style={'width': '30%', 'display': 'inline-table', 'margin-top': 60, 'margin-left': 50}),
+
     html.Div([
         html.H4('Split by'),
         html.Div([
@@ -329,8 +332,8 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
                                     hoverinfo='label+percent',
                                     marker={
                 'colors': [
-                                    'rgb(141, 160, 203)',
-                                    'rgb(203, 213, 232)']}), row=rowNum, col=colNum)
+                                    '#90EE90',
+                                    '#38761D']}), row=rowNum, col=colNum)
 
             colNum += 1
         rowNum += 1
