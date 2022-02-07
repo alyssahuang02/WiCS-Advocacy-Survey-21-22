@@ -38,8 +38,9 @@ app.layout = html.Div([
 
     html.Div([
         html.H1('Explore'),
-        html.P('Explore the experiences of Harvard undergraduate students with computer science, as they relate to gender and other aspects of identity.')
+        html.P('Explore the experiences of Harvard undergraduate students with computer science, as they relate to gender and other aspects of identity.'),
     ], style={'width': '30%', 'display': 'inline-table', 'margin-top': 60, 'margin-left': 50}),
+    
 
     html.Div([
         html.H4('Split by'),
@@ -51,6 +52,8 @@ app.layout = html.Div([
                 clearable=False
             )
         ])
+        
+
     ], style={'width': '20%', 'display': 'inline-table', 'margin-top': 20, 'margin-left': 50}),
     html.Div([
         html.H4('Filter'),
@@ -156,6 +159,11 @@ app.layout = html.Div([
         html.P('Filters: None', id='filters-label',
                style={'font-style': 'italic'})
     ], style={'width': '30%', 'display': 'inline-table', 'margin-top': 20, 'margin-left': 50}),
+    
+        
+    html.Div([
+        html.H5('I would feel comfortable approaching at least one faculty member from within my primary concentration department...')
+    ], style={'width': '100%', 'display': 'inline-table', 'margin-top': 15, 'margin-left': 50}),
 
 
 
