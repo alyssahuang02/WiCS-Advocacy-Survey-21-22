@@ -338,10 +338,7 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
             votes[1] = total - votes[0]
             figSub.add_trace(go.Pie(labels=['Yes', 'No'], values=votes, textinfo='none',
                                     hoverinfo='label+percent',
-                                    marker={
-                'colors': [
-                                    '#90EE90',
-                                    '#38761D']}), row=rowNum, col=colNum)
+                                    marker={'colors': ['rgb(71,159,118)', 'rgb(233,236,239)']}), row=rowNum, col=colNum)
 
             colNum += 1
         rowNum += 1
