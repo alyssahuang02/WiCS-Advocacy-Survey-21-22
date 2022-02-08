@@ -32,12 +32,21 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 
+
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+# app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+
 app.layout = html.Div([
 
     html.Div([
         html.H1('Explore'),
-        html.P('Explore the experiences of Harvard undergraduate students with computer science, as they relate to gender and other aspects of identity.')
+        html.P('Explore the experiences of Harvard undergraduate students with computer science, as they relate to gender and other aspects of identity.'),
     ], style={'width': '30%', 'display': 'inline-table', 'margin-top': 60, 'margin-left': 50}),
+    
+
     html.Div([
         html.H4('Split by'),
         html.Div([
@@ -48,6 +57,8 @@ app.layout = html.Div([
                 clearable=False
             )
         ])
+        
+
     ], style={'width': '20%', 'display': 'inline-table', 'margin-top': 20, 'margin-left': 50}),
     html.Div([
         html.H4('Filter'),
@@ -153,6 +164,11 @@ app.layout = html.Div([
         html.P('Filters: None', id='filters-label',
                style={'font-style': 'italic'})
     ], style={'width': '30%', 'display': 'inline-table', 'margin-top': 20, 'margin-left': 50}),
+    
+        
+    html.Div([
+        html.H5('It has been easy for me to join student organizations at Harvard relating to my ...')
+    ], style={'width': '100%', 'display': 'inline-table', 'margin-top': 15, 'margin-left': 50}),
 
 
 
@@ -327,10 +343,7 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
             votes[1] = total - votes[0]
             figSub.add_trace(go.Pie(labels=['Yes', 'No'], values=votes, textinfo='none',
                                     hoverinfo='label+percent',
-                                    marker={
-                'colors': [
-                                    'rgb(141, 160, 203)',
-                                    'rgb(203, 213, 232)']}), row=rowNum, col=colNum)
+                                    marker={'colors': ['rgb(71,159,118)', 'rgb(233,236,239)']}), row=rowNum, col=colNum)
 
             colNum += 1
         rowNum += 1
