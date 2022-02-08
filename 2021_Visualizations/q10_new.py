@@ -295,6 +295,7 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
         yes_num = df[df[QUESTION_ID].str.contains('Yes', na=False)].shape[0] #filters out yes respondents 
         no_num = df[~(df[QUESTION_ID].str.contains('Yes', na=False))].shape[0] #filters our no respondents
         y_n_values = [yes_num,no_num]
+
         fig.add_trace(go.Pie(
             labels = ['Yes', 'No'],
             values = y_n_values,
@@ -329,3 +330,4 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+
