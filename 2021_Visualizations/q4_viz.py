@@ -329,7 +329,7 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
         ), row=1, col=colNum)
         colNum +=1
     fig.update_layout(
-        title='Before attending Harvard, which of the following concentrations did you consider pursuing? Note that results to this question are grouped by school.',
+        title='Before attending Harvard, which of the following concentrations did you consider pursuing (grouped by schools)?',
         annotations=text_annotations,
         height=300,
         margin=dict(l=0, r=0, t=70, b=30),
