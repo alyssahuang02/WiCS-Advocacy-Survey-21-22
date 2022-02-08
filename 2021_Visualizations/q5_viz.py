@@ -36,7 +36,7 @@ app.layout = html.Div([
 
     html.Div([
         html.H1('Explore'),
-        html.P('Explore the experiences of Harvard undergraduate students with computer science, as they relate to gender and other aspects of identity.')
+        html.P('Which of the following on-campus resources have helped you decide your concentration(s)?')
     ], style={'width': '30%', 'display': 'inline-table', 'margin-top': 60, 'margin-left': 50}),
     html.Div([
         html.H4('Split by'),
@@ -341,7 +341,7 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
         return C.EMPTY_FIGURE
     # plot titles
     figSub.update_layout(
-        title='Question 5',
+        title='',
         font=dict(
             family="Courier New, monospace",
             size=15,
