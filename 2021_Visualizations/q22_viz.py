@@ -1,3 +1,5 @@
+# combine into drop down (22, 23, 24)
+
 import constants as C
 import dataframe_init as D
 
@@ -16,10 +18,14 @@ from datetime import datetime
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 legend_labels = ['Strongly disagree', 'Disagree', 'Somewhat disagree', 'Neither agree nor disagree', 'Somewhat agree', 'Agree', 'Strongly agree']
-#legend_labels=[1,2,3,4,5,6,7]
+# legend_labels=[1,2,3,4,5,6,7]
 # legend_labels = ['Significantly less knowledgeable', 'Less knowledgeable', 'Slightly less knowledgeable', 'Similarly knowledgeable', 'Slightly more knowledgeable', 'More knowledgeable', 'Significantly more knowledgeable']
 bar_colors = ['rgba(102, 0, 0, 0.8)', 'rgba(204, 0, 0, 0.8)', 'rgba(234, 153, 153, 0.8)', 'rgba(217, 217, 217, 0.8)', 'rgba(164, 194, 244, 0.8)', 'rgba(60, 120, 216, 0.8)', 'rgba(28, 69, 135, 0.8)']
-QUESTION_ID = 'Q22_4'
+
+
+CATEGORIES_MAPPING = {
+    'Gender':'Q22_1', 'Race or ethnicity':'Q22_2', 'Sexuality':'Q22_3', 'Disability': 'Q22_4', 'Social class': 'Q22_5'
+}
 
 app.layout = html.Div([
     html.Div([
@@ -36,6 +42,19 @@ app.layout = html.Div([
                 clearable=False
             )
         ])
+        
+    ], style={'width': '20%', 'display': 'inline-table', 'margin-top' : 20, 'margin-left' : 50}),
+    html.Div([
+        html.H4('Statement'),
+        html.Div([
+            dcc.Dropdown(
+                id='statement',
+                options=[{'label': i, 'value': i} for i in CATEGORIES_MAPPING],
+                value='Gender',
+                optionHeight = 70
+            )
+        ])
+    
     ], style={'width': '20%', 'display': 'inline-table', 'margin-top' : 20, 'margin-left' : 50}),
     html.Div([
         html.H4('Filter'),
@@ -140,7 +159,7 @@ def is_sample_size_insufficient(dff, axis):
     # check number of responses per category is greater than minimum sample size
     return any(c < C.MIN_SAMPLE_SIZE for c in category_counts)
 
-def calculate_percentages(dff, axis, y_data):
+def calculate_percentages(dff, axis, y_data, QUESTION_ID):
     data = []
     for y_label in y_data:
         filt_dff = dff[dff[axis] == y_label]
@@ -250,6 +269,7 @@ def filter_df(df, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filte
 @app.callback(
     Output('visualization', 'figure'),
     Input('axis', 'value'),
+    Input('statement', 'value'),
     Input('filter-gender-dropdown', 'value'),
     Input('filter-race-ethnicity-dropdown', 'value'),
     Input('filter-bgltq-dropdown', 'value'),
@@ -257,14 +277,17 @@ def filter_df(df, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filte
     Input('filter-class-year-dropdown', 'value'),
     Input('filter-school-dropdown', 'value'),
     Input('filter-concentration-dropdown', 'value'))
-def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter, 
+def update_graph(axis, statement, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter, 
     class_year_filter, school_filter, concentration_filter):
+        
+    QUESTION_ID = CATEGORIES_MAPPING[statement]
+    
     dff = filter_df(D.AXIS_DF[axis], gender_filter, race_ethnicity_filter, bgltq_filter,
         fgli_filter, class_year_filter, school_filter, concentration_filter)
     print(axis)
     fig = go.Figure()
     y_data = dff[axis].unique()[::-1]
-    x_data = calculate_percentages(dff, axis, y_data)
+    x_data = calculate_percentages(dff, axis, y_data, QUESTION_ID)
     print(x_data)
 
     # return empty plot if there is not enough data (or if figure is not yet implemented)
