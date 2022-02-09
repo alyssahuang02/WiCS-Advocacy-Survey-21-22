@@ -1,3 +1,4 @@
+
 import constants as C
 import dataframe_init as D
 
@@ -150,7 +151,6 @@ app.layout = html.Div([
         html.P('Filters: None', id='filters-label',
                style={'font-style': 'italic'})
     ], style={'width': '30%', 'display': 'inline-table', 'margin-top': 20, 'margin-left': 50}),
-
 
 
     html.Div(
@@ -340,11 +340,11 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
     fig.update_layout(
         title='I would feel comfortable approaching at least one faculty member from within my primary concentration department...',
         annotations=text_annotations,
-        height=300,
-        margin=dict(l=0, r=0, t=70, b=30),
+        height=400,
+        margin=dict(l=0, r=0, t=20, b=30),
         legend=dict(
-            yanchor="bottom",
-            y=1.02,
+            yanchor="top",
+            y=2.2,
             xanchor="left",
             x=1.02,
             itemclick=False,
