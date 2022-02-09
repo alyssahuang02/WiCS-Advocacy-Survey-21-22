@@ -309,7 +309,7 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
         return C.EMPTY_FIGURE
     # plot titles
     figSub.update_layout(
-        title=QUESTION_ID,
+        title='Do you plan to enroll in another course within the CS department in a future semester?',
         font=dict(
             family="Courier New, monospace",
             size=15,
