@@ -18,6 +18,14 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 # app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+# constants
+# column titles with formatting
+COLUMN_TITLES = ['', 'For an <br> academic letter of <br> recommendation <br> <br>', 'To inquire <br> about research <br> opportunities <br> <br>',
+                 'To inquire <br> about career <br> opportunities <br> <br>', 'To inquire <br> about advice for <br> my concentration <br> <br>']
+
+# label names used to extract data
+ANSWER_OPTIONS = ['For an academic letter of recommendation', 'To inquire about research opportunities',
+                  'To inquire about career opportunities',  'To inquire about advice for my concentration']
 QUESTION_ID = 'Q10'
 
 
@@ -275,39 +283,62 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
     dff = filter_df(D.AXIS_DF[axis], gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter,
         class_year_filter, school_filter, concentration_filter)
 
-    unique_categories = dff[axis].unique()
-    category_names = list(dff[axis].unique())
-    
-    new_category = []
-    
-    for c in unique_categories:
-        category_df = dff[dff[axis] == c]
-        new_category.append(category_df)
- 
-    generateSpecs = [[{"type": "pie"} for _ in new_category]]
-    fig = make_subplots(rows=1, cols=len(new_category),specs = generateSpecs, subplot_titles = category_names)
-    colNum = 1
+    columnOptions = []
+    for choice in ANSWER_OPTIONS:
+        columnOptions.append(dff[dff[QUESTION_ID].str.contains(
+            choice, na=False)])
+            
+    # names is used for labelling
+    names = list(dff[axis].unique())
+
+    # initialize subplot
+    generateSpecs = [[{"type": "pie"}
+                      for _ in range(len(columnOptions)+1)] for _ in names]
+    fig = make_subplots(rows=len(names), cols=len(
+        columnOptions)+1, specs=generateSpecs, column_titles=COLUMN_TITLES)
+    rowNum = 1
    
     text_annotations=[]
     text_annotations.append(dict(font=dict(size=14)))
 
-    for df in new_category: #new category = inc. in colnum
-        yes_num = df[df[QUESTION_ID].str.contains('Yes', na=False)].shape[0] #filters out yes respondents 
-        no_num = df[~(df[QUESTION_ID].str.contains('Yes', na=False))].shape[0] #filters our no respondents
-        y_n_values = [yes_num,no_num]
+    for label in names:
+        colNum = 1
+        # add row title
+        fig.add_trace(go.Table(
+            header=dict(values=[label], fill_color='rgba(0,0,0,0)', font=dict(size=16), align='center'),
+            cells=dict(values=[' '],
+                       fill_color='rgba(0,0,0,0)',
+                       align='center')
+        ),
+            row=rowNum, col=colNum)
+        colNum += 1
 
-        fig.add_trace(go.Pie(
-            labels = ['Yes', 'No'],
-            values = y_n_values,
-            textinfo='none',
-            hoverinfo='label+percent',
-            direction = 'clockwise',
-            sort = False,
-            marker={'colors': ['rgb(71,159,118)', 'rgb(233,236,239)']}
-        ), row=1, col=colNum)
-        colNum +=1
+        # construct pie chart
+        for colOption in columnOptions:
+
+            votes = [0, 0]
+            for x in colOption[axis]:
+                if x == label:
+                    votes[0] += 1
+
+            total = dff[dff[axis] == label][QUESTION_ID].count()
+
+            votes[1] = total - votes[0]
+            fig.add_trace(go.Pie(
+                labels = ['Yes', 'No'],
+                values = votes,
+                textinfo='none',
+                hoverinfo='label+percent',
+                direction = 'clockwise',
+                sort = False,
+                marker={'colors': ['rgb(71,159,118)', 'rgb(233,236,239)']}
+                ), row=rowNum, col=colNum)
+
+            colNum += 1
+        rowNum += 1
+
     fig.update_layout(
-        title='Have you ever been involved in a student organization at Harvard relating to computer science, engineering, or technology?',
+        title='I would feel comfortable approaching at least one faculty member from within my primary concentration department...',
         annotations=text_annotations,
         height=300,
         margin=dict(l=0, r=0, t=70, b=30),
