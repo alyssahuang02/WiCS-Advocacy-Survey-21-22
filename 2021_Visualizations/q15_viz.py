@@ -287,6 +287,9 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
     fig = make_subplots(rows=1, cols=len(names), specs = generateSpecs, subplot_titles = names)
     colNum = 1
 
+    text_annotations=[]
+    text_annotations.append(dict(font=dict(size=14)))
+
     for name in names:
         df = dff[dff[axis] == name]
         yes_num = df[df[QUESTION_ID].str.contains(question_option, na=False)].shape[0] #filters out yes respondents 
@@ -302,11 +305,17 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
         
     # plot titles
     fig.update_layout(
-        title='Question 15',
-        font=dict(
-            family="Courier New, monospace",
-            size=15,
-            color="RebeccaPurple"
+        title='Which of the following reasons may inform your decision to enroll in another course within the CS department?',
+        annotations=text_annotations,
+        height=400,
+        margin=dict(l=0, r=0, t=20, b=30),
+        legend=dict(
+            yanchor="top",
+            y=2.2,
+            xanchor="left",
+            x=1.02,
+            itemclick=False,
+            itemdoubleclick=False
         )
     )
 
