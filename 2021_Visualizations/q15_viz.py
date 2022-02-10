@@ -151,7 +151,7 @@ html.Div([
             dcc.Dropdown(
                 id='question_option',
                 options=[{'label': i, 'value': i} for i in QUESTION_OPTIONS],
-                value=QUESTION_OPTIONS[0]),
+                value=QUESTION_OPTIONS[0])
                 
         ], style={'width': '50%', 'margin-left': '50px'})
     ],
