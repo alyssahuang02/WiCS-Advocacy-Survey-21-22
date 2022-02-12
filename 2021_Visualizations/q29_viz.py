@@ -294,7 +294,7 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
         ), row=1, col=colNum)
         colNum +=1
     fig.update_layout(
-        title='When looking for internships and job opportunities, direct connections or referrals are accessible to me through…', 
+        title='When looking for internships and job opportunities, guidance and mentorship are accessible to me through…', 
         annotations=text_annotations,
         height=300,
         margin=dict(l=0, r=0, t=70, b=30),

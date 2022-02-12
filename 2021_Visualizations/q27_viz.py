@@ -18,7 +18,8 @@ from datetime import datetime
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 legend_labels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-bar_colors = ['rgba(102, 0, 0, 0.8)', 'rgba(255, 13, 13, 0.8)', 'rgba(255, 78, 17, 0.8)', 'rgba(255, 142, 21, 0.8)', 'rgba(250, 183, 51, 0.8)', 'rgba(172, 179, 52, 0.8)', 'rgba(105, 179, 76, 0.8)', 'rgba(50, 205, 50, 0.8)', 'rgba(0, 128, 0, 0.8)', 'rgba(1, 50, 32, 0.8)']
+bar_colors = ['rgba(182, 6, 6, 1)', 'rgba(211, 81, 0, 1)', 'rgba(233, 134, 0, 1)', 'rgba(247, 186, 0, 1)', 'rgba(252, 238, 6, 1)', 'rgba(196, 208, 0, 1)', 'rgba(145, 178, 0, 1)', 'rgba(99, 147, 0, 1)', 'rgba(56, 116, 2, 1)', 'rgba(8, 86, 2, 1)']
+bar_colors = bar_colors[::-1]
 QUESTION_ID = 'Q27_1'
 
 app.layout = html.Div([
@@ -267,8 +268,8 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
     x_data = calculate_percentages(dff, axis, y_data)
 
     # return empty plot if there is not enough data (or if figure is not yet implemented)
-    if fig == None or is_sample_size_insufficient(dff, axis):
-        return C.EMPTY_FIGURE
+    # if fig == None or is_sample_size_insufficient(dff, axis):
+    #     return C.EMPTY_FIGURE
 
     for row in range(len(x_data)):
         for col in range(len(x_data[0])):
