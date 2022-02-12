@@ -1,7 +1,3 @@
-# change to gradient
-# ["rgb(10,54,34)", "rgb(20,108,67)", "rgb(71,159,118)", "rgb(162,207,187)"]
-# ^ gradient used last year (but it's missing one)
-
 import constants as C
 import dataframe_init as D
 
@@ -19,8 +15,8 @@ from datetime import datetime
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-legend_labels = ['I have never been taught programming or computer science in an academic or extracurricular program', 'In middle school or earlier (including summer after graduation)', '	In high school (including summer after graduation)', '	In college', 'Other']
-bar_colors = ['rgba(102, 0, 0, 0.8)', 'rgba(204, 0, 0, 0.8)', 'rgba(217, 217, 217, 0.8)', 'rgba(60, 120, 216, 0.8)', 'rgba(28, 69, 135, 0.8)']
+legend_labels = ['In middle school or earlier (including summer after graduation)', 'In high school (including summer after graduation)', 'In college', 'I have never been taught programming or computer science in an academic or extracurricular program']
+bar_colors = ["rgb(10,54,34)", "rgb(20,108,67)", "rgb(71,159,118)", "rgb(162,207,187)"]
 QUESTION_ID = 'Q6'
 
 app.layout = html.Div([
