@@ -138,7 +138,6 @@ html.Div([
     ),
     html.P('Filters: None', id='filters-label', style={'font-style' : 'italic'})
 ], style={'width': '30%', 'display': 'inline-table', 'margin-top' : 20, 'margin-left' : 50}),
-
         html.Div([
             dcc.Dropdown(
                 id='question_option',
