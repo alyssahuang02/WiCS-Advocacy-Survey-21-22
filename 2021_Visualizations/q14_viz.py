@@ -15,10 +15,10 @@ import dash_bootstrap_components as dbc
 
 # constants
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-QUESTION_ID = 'Q14'
 
 # app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+q_id = 'Q14'
 
 
 app.layout = html.Div([
@@ -271,52 +271,60 @@ def filter_df(df, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filte
     Input('filter-concentration-dropdown', 'value'))
 def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter,
                  class_year_filter, school_filter, concentration_filter):
+    # get relevant dataframe according to axis
+    dff = filter_df(D.AXIS_DF[axis], gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter,
+        class_year_filter, school_filter, concentration_filter)
 
-    # extract relevant data
-    dff = filter_df(D.AXIS_DF[axis], gender_filter, race_ethnicity_filter, bgltq_filter,
-                    fgli_filter, class_year_filter, school_filter, concentration_filter)
-            
-    # names is used for labelling
-    names = list(dff[axis].unique())
-
-    # initialize subplot
-    generateSpecs = [[{"type": "pie"} for _ in names]]
-    figSub = make_subplots(rows=1, cols=len(names), specs=generateSpecs, subplot_titles=(names))
-
+    unique_categories = dff[axis].unique()
+    category_names = list(dff[axis].unique())
+    
+    new_category = []
+    
+    for c in unique_categories:
+        category_df = dff[dff[axis] == c]
+        new_category.append(category_df)
+ 
+    generateSpecs = [[{"type": "pie"} for _ in new_category]]
+    fig = make_subplots(rows=1, cols=len(new_category),specs = generateSpecs, subplot_titles = category_names)
     colNum = 1
-    for label in names:
-        votes = [0, 0]
+   
+    text_annotations=[]
+    text_annotations.append(dict(font=dict(size=14)))
 
-        # TODO: Clean/make more abstract
-        for x in dff[dff[axis] == label][QUESTION_ID]:
-            if x == 'Yes':
-                votes[0] += 1
-
-        total = dff[dff[axis] == label][QUESTION_ID].count()
-
-        votes[1] = total - votes[0]
-        figSub.add_trace(go.Pie(labels=['Yes', 'No'], values=votes, textinfo='none',
-                                hoverinfo='label+percent',
-                                marker={
-            'colors': [
-                                'rgb(141, 160, 203)',
-                                'rgb(203, 213, 232)']}), row=1, col=colNum)
-        colNum += 1
-
-    # check for errors
-    if figSub == None or is_sample_size_insufficient(dff, axis):
-        print("ERROR")
-        return C.EMPTY_FIGURE
-    # plot titles
-    figSub.update_layout(
-        title=QUESTION_ID,
-        font=dict(
-            family="Courier New, monospace",
-            size=15,
-            color="RebeccaPurple"
+    for df in new_category: #new category = inc. in colnum
+        yes_num = df[df[q_id].str.contains('Yes', na=False)].shape[0] #filters out yes respondents 
+        no_num = df[df[q_id].str.contains('No', na=False)].shape[0] #filters our no respondents
+        y_n_values = [yes_num,no_num]
+        fig.add_trace(go.Pie(
+            labels = ['Yes', 'No'],
+            values = y_n_values,
+            textinfo='none',
+            hoverinfo='label+percent',
+            direction = 'clockwise',
+            sort = False,
+            marker={'colors': ['rgb(71,159,118)', 'rgb(233,236,239)']}
+        ), row=1, col=colNum)
+        colNum +=1
+    fig.update_layout(
+        title='Have you ever been involved in a student organization at Harvard relating to computer science, engineering, or technology?',
+        annotations=text_annotations,
+        height=300,
+        margin=dict(l=0, r=0, t=70, b=30),
+        legend=dict(
+            yanchor="bottom",
+            y=1.02,
+            xanchor="left",
+            x=1.02,
+            itemclick=False,
+            itemdoubleclick=False
         )
     )
-    return figSub
+
+    # check for errors
+    if fig == None or is_sample_size_insufficient(dff, axis):
+        print("ERROR")
+    
+    return fig
 
 
 if __name__ == '__main__':
