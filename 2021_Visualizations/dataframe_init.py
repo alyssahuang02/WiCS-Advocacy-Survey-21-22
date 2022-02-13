@@ -5,6 +5,8 @@ import constants as C
 import pandas as pd
 from datetime import datetime
 
+from pie_charts import filter_df
+
 
 RAW_DF = pd.read_csv('surveyresponses2021UPDATED.csv')
 pd.options.mode.chained_assignment = None
@@ -125,27 +127,34 @@ def filter_senior(df):
     return df[(datetime(2021, 9, 1) <= CLEAN_DF['Q2_DT']) & (CLEAN_DF['Q2_DT'] <= datetime(2022, 8, 31))]
 
 def filter_school(df, c):
-    if c == 'Arts and Humanities':
-        return filter_arts_humanitites(df)
-    if c == 'Social Sciences':
-        return filter_social_sciences(df)
-    if c == 'Pure Sciences':
-        return filter_pure_sciences(df)
-    if c == 'Engineering and Applied Sciences':
-        return filter_seas(df)
-    return df
+    if c == 'SEAS':
+        return df[df['Q1'].isin(C.SEAS)]
+    elif c == 'All':
+        return df
+    return df[(df['Q1'].isin(C.ARTS_HUMANITIES)) | (df['Q1'].isin(C.SOCIAL_SCIENCES)) | (df['Q1'].isin(C.PURE_SCIENCES))]
 
-def filter_arts_humanitites(df):
-    return df[df['Q1'].isin(C.ARTS_HUMANITIES)]
+# def filter_school(df, c):
+#     if c == 'Arts and Humanities':
+#         return filter_arts_humanitites(df)
+#     if c == 'Social Sciences':
+#         return filter_social_sciences(df)
+#     if c == 'Pure Sciences':
+#         return filter_pure_sciences(df)
+#     if c == 'Engineering and Applied Sciences':
+#         return filter_seas(df)
+#     return df
 
-def filter_social_sciences(df):
-    return df[df['Q1'].isin(C.SOCIAL_SCIENCES)]
+# def filter_arts_humanitites(df):
+#     return df[df['Q1'].isin(C.ARTS_HUMANITIES)]
 
-def filter_pure_sciences(df):
-    return df[df['Q1'].isin(C.PURE_SCIENCES)]
+# def filter_social_sciences(df):
+#     return df[df['Q1'].isin(C.SOCIAL_SCIENCES)]
 
-def filter_seas(df):
-    return df[df['Q1'].isin(C.SEAS)]
+# def filter_pure_sciences(df):
+#     return df[df['Q1'].isin(C.PURE_SCIENCES)]
+
+# def filter_seas(df):
+#     return df[df['Q1'].isin(C.SEAS)]
 
 def filter_conc(df, c):
     if c == 'Computer Science':
@@ -213,15 +222,22 @@ CLASS_YEAR_DF = pd.concat([FIRSTYEAR_DF, SOPHOMORE_DF, JUNIOR_DF, SENIOR_DF], ig
 CLASS_YEAR_DF = CLASS_YEAR_DF[CLASS_YEAR_DF['Class Year'].isin(C.CLASS_YEAR_CATEGORIES)]
 
 # School
-ARTS_HUMANITIES_DF = filter_arts_humanitites(CLEAN_DF)
-ARTS_HUMANITIES_DF['School'] = 'Arts and Humanities'
-SOCIAL_SCIENCES_DF = filter_social_sciences(CLEAN_DF)
-SOCIAL_SCIENCES_DF['School'] = 'Social Sciences'
-PURE_SCIENCES_DF = filter_pure_sciences(CLEAN_DF)
-PURE_SCIENCES_DF['School'] = 'Pure Sciences'
-SEAS_DF = filter_seas(CLEAN_DF)
-SEAS_DF['School'] = 'Engineering and Applied Sciences'
-SCHOOL_DF = pd.concat([ARTS_HUMANITIES_DF, SOCIAL_SCIENCES_DF, PURE_SCIENCES_DF, SEAS_DF], ignore_index=True, sort=False)
+# ARTS_HUMANITIES_DF = filter_arts_humanitites(CLEAN_DF)
+# ARTS_HUMANITIES_DF['School'] = 'Arts and Humanities'
+# SOCIAL_SCIENCES_DF = filter_social_sciences(CLEAN_DF)
+# SOCIAL_SCIENCES_DF['School'] = 'Social Sciences'
+# PURE_SCIENCES_DF = filter_pure_sciences(CLEAN_DF)
+# PURE_SCIENCES_DF['School'] = 'Pure Sciences'
+# SEAS_DF = filter_seas(CLEAN_DF)
+# SEAS_DF['School'] = 'Engineering and Applied Sciences'
+# SCHOOL_DF = pd.concat([ARTS_HUMANITIES_DF, SOCIAL_SCIENCES_DF, PURE_SCIENCES_DF, SEAS_DF], ignore_index=True, sort=False)
+# SCHOOL_DF = SCHOOL_DF[SCHOOL_DF['School'].isin(C.SCHOOL_CATEGORIES)]
+
+SEAS_DF = filter_school(CLEAN_DF, 'SEAS')
+SEAS_DF['School'] = 'SEAS'
+NON_SEAS_DF = filter_school(CLEAN_DF, 'Other')
+NON_SEAS_DF['School'] = 'Non-SEAS'
+SCHOOL_DF = pd.concat([SEAS_DF, NON_SEAS_DF], ignore_index=True, sort=False)
 SCHOOL_DF = SCHOOL_DF[SCHOOL_DF['School'].isin(C.SCHOOL_CATEGORIES)]
 
 # Disability
@@ -232,6 +248,7 @@ IS_NOT_DIAGNOSED_DF['Disability'] = 'Non-Disability'
 DISABILITY_DF = pd.concat([IS_DIAGNOSED_DF, IS_NOT_DIAGNOSED_DF], ignore_index=True, sort=False)
 DISABILITY_DF = DISABILITY_DF[DISABILITY_DF['Disability'].isin(C.DISABILITY_CATEGORIES)]
 
+#print(SCHOOL_DF)
 AXIS_DF = {
     'Gender' : GENDER_DF,
     'Race/Ethnicity' : RACE_ETHNICITY_DF,

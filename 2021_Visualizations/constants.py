@@ -48,7 +48,7 @@ LIKERT_AGREEMENT_KEY = {
 }
 
 # Axes
-VIZ_AXES = ['Gender', 'Race/Ethnicity', 'BGLTQ+', 'FGLI', 'Class Year', 'School']
+VIZ_AXES = ['Gender', 'Race/Ethnicity', 'BGLTQ+', 'FGLI', 'Class Year', 'School', 'Disability']
 
 # Axes categories
 GENDER_CATEGORIES = ['Male', 'Non-male']
@@ -57,8 +57,9 @@ RACE_ETHNICITY_CATEGORIES = ['URM', 'Non-URM']
 BGLTQ_CATEGORIES = ['BGLTQ+', 'Non-BGLTQ+']
 FGLI_CATEGORIES = ['FGLI', 'Non-FGLI']
 CLASS_YEAR_CATEGORIES = ['First-year', 'Sophomore', 'Junior', 'Senior']
-SCHOOL_CATEGORIES = ['Arts and Humanities', 'Social Sciences', 'Pure Sciences', 'Engineering and Applied Sciences']
-DISABILITY_CATEGORIES = ['Yes, I have been diagnosed with a disability or impairment', 'No, I have not been diagnosed with a disability or impairment']
+#SCHOOL_CATEGORIES = ['Arts and Humanities', 'Social Sciences', 'Pure Sciences', 'Engineering and Applied Sciences']
+SCHOOL_CATEGORIES = ['SEAS', 'Non-SEAS']
+DISABILITY_CATEGORIES = ['Disability', 'Non-Disability']
 
 # Filter options
 GENDER_FILTER_OPTIONS = GENDER_CATEGORIES.copy()
@@ -74,6 +75,9 @@ CLASS_YEAR_FILTER_OPTIONS.insert(0, 'All')
 SCHOOL_FILTER_OPTIONS = SCHOOL_CATEGORIES.copy()
 SCHOOL_FILTER_OPTIONS.insert(0, 'All')
 CONCENTRATION_FILTER_OPTIONS = ['All', 'Computer Science']
+
+DISABILITY_FILTER_OPTIONS = DISABILITY_CATEGORIES.copy()
+DISABILITY_FILTER_OPTIONS.insert(0, 'All')
 
 # Empty figure
 EMPTY_FIGURE = {
