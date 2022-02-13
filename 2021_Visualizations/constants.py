@@ -52,7 +52,8 @@ VIZ_AXES = ['Gender', 'Race/Ethnicity', 'BGLTQ+', 'FGLI', 'Class Year', 'School'
 
 # Axes categories
 GENDER_CATEGORIES = ['Male', 'Non-male']
-RACE_ETHNICITY_CATEGORIES = ['Asian', 'Black or African American', 'Hispanic or Latinx', 'White']
+#RACE_ETHNICITY_CATEGORIES = ['Asian', 'Black or African American', 'Hispanic or Latinx', 'White']
+RACE_ETHNICITY_CATEGORIES = ['URM', 'Non-URM']
 BGLTQ_CATEGORIES = ['BGLTQ+', 'Non-BGLTQ+']
 FGLI_CATEGORIES = ['FGLI', 'Non-FGLI']
 CLASS_YEAR_CATEGORIES = ['First-year', 'Sophomore', 'Junior', 'Senior']

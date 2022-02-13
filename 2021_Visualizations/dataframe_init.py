@@ -56,6 +56,12 @@ def filter_hispanic(df):
 def filter_white(df):
     return df[df['Q33'].str.contains('White', na=False)]
 
+def filter_urm(df):
+    return df[(df['Q33'].str.contains('Black or African American', na=False)) | (df['Q34'] == 'Yes, of Hispanic or Latinx origin')]
+
+def filter_non_urm(df):
+    return df[(df['Q33'].str.contains('White', na=False)) | (df['Q33'].str.contains('Asian', na=False))]
+
 def filter_bgltq(df, c):
     if c == 'BGLTQ+':
         return filter_is_bgltq(df)
@@ -161,15 +167,21 @@ GENDER_DF = pd.concat([MALE_DF, NON_MALE_DF], ignore_index=True, sort=False)
 GENDER_DF = GENDER_DF[GENDER_DF['Gender'].isin(C.GENDER_CATEGORIES)]
 
 # Race/Ethnicity
-ASIAN_DF = filter_asian(CLEAN_DF)
-ASIAN_DF['Race/Ethnicity'] = 'Asian'
-BLACK_DF = filter_black(CLEAN_DF)
-BLACK_DF['Race/Ethnicity'] = 'Black or African American'
-HISPANIC_DF = filter_hispanic(CLEAN_DF)
-HISPANIC_DF['Race/Ethnicity'] = 'Hispanic or Latinx'
-WHITE_DF = filter_white(CLEAN_DF)
-WHITE_DF['Race/Ethnicity'] = 'White'
-RACE_ETHNICITY_DF = pd.concat([ASIAN_DF, BLACK_DF, HISPANIC_DF, WHITE_DF], ignore_index=True, sort=False)
+# ASIAN_DF = filter_asian(CLEAN_DF)
+# ASIAN_DF['Race/Ethnicity'] = 'Asian'
+# BLACK_DF = filter_black(CLEAN_DF)
+# BLACK_DF['Race/Ethnicity'] = 'Black or African American'
+# HISPANIC_DF = filter_hispanic(CLEAN_DF)
+# HISPANIC_DF['Race/Ethnicity'] = 'Hispanic or Latinx'
+# WHITE_DF = filter_white(CLEAN_DF)
+# WHITE_DF['Race/Ethnicity'] = 'White'
+# RACE_ETHNICITY_DF = pd.concat([ASIAN_DF, BLACK_DF, HISPANIC_DF, WHITE_DF], ignore_index=True, sort=False)
+
+URM_DF = filter_urm(CLEAN_DF)
+URM_DF['Race/Ethnicity'] = 'URM'
+NON_URM_DF = filter_non_urm(CLEAN_DF)
+NON_URM_DF['Race/Ethnicity'] = 'Non-URM'
+RACE_ETHNICITY_DF = pd.concat([URM_DF, NON_URM_DF], ignore_index=True, sort=False)
 RACE_ETHNICITY_DF = RACE_ETHNICITY_DF[RACE_ETHNICITY_DF['Race/Ethnicity'].isin(C.RACE_ETHNICITY_CATEGORIES)]
 
 # BGLTQ+
