@@ -306,7 +306,7 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
         ), row=1, col=colNum)
         colNum +=1
     fig.update_layout(
-        title='Have you ever been involved in a student organization at Harvard relating to computer science, engineering, or technology?',
+        title='Do you plan to enroll in another course within the CS department in a future semester?',
         annotations=text_annotations,
         height=300,
         margin=dict(l=0, r=0, t=70, b=30),
