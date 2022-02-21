@@ -162,12 +162,14 @@ def is_sample_size_insufficient(dff, axis):
 def calculate_percentages(dff, axis, y_data, QUESTION_ID):
     data = []
     for y_label in y_data:
+        print(y_label)
         filt_dff = dff[dff[axis] == y_label]
         eval_counts = []
         total = 0
         row = []
         for eval_label in legend_labels:
             count = filt_dff[filt_dff[QUESTION_ID] == eval_label].shape[0]
+            print(eval_label, count)
             eval_counts.append(count)
             total += count
         for count in eval_counts:
