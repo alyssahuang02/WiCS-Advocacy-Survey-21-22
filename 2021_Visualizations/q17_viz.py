@@ -286,8 +286,8 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
         fig.add_trace(go.Pie(labels=['Yes', 'No'], values=y_n_values, textinfo='none',
                                 hoverinfo='label+percent', marker={
             'colors': [
-            'e2eafc',
-            '#9AACCF']}), row=1, col=colNum)
+            'rgb(71,159,118)',
+            'rgb(233,236,239)']}), row=1, col=colNum)
     
         colNum +=1
         
