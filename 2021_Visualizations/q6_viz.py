@@ -155,6 +155,7 @@ def calculate_percentages(dff, axis, y_data):
                 value = round(count * 100 / total, 2)
             row.append(value)
         data.append(row)
+        print(y_label + ": " + str(total))
     return data
 
 @app.callback(

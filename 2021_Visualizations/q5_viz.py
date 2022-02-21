@@ -334,6 +334,7 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
 
             colNum += 1
         rowNum += 1
+        print(total)
 
     # check for errors
     if figSub == None or is_sample_size_insufficient(dff, axis):
