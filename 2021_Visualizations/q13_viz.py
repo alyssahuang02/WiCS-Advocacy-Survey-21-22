@@ -15,9 +15,9 @@ from datetime import datetime
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-QUESTION_ID = 'Q16'
-bar_colors = ["rgb(227,93,106)", "rgb(255,205,57)", "rgb(71,159,118)"]
-legend_labels = ['No, I have not considered applying to graduate studies in CS', 'Yes, I have considered but do not intend to apply to graduate studies in CS', 'Yes, I have considered and intend to apply (or am currently applying) to graduate studies in CS']
+legend_labels = ['Strongly disagree', 'Disagree', 'Somewhat disagree', 'Neither agree nor disagree', 'Somewhat agree', 'Agree', 'Strongly agree']
+bar_colors = ['rgba(102, 0, 0, 0.8)', 'rgba(204, 0, 0, 0.8)', 'rgba(234, 153, 153, 0.8)', 'rgba(217, 217, 217, 0.8)', 'rgba(164, 194, 244, 0.8)', 'rgba(60, 120, 216, 0.8)', 'rgba(28, 69, 135, 0.8)']
+QUESTION_ID = 'Q13'
 
 app.layout = html.Div([
     html.Div([
@@ -155,7 +155,6 @@ def calculate_percentages(dff, axis, y_data):
                 value = round(count * 100 / total, 2)
             row.append(value)
         data.append(row)
-        print(y_label + ": " + str(total))
     return data
 
 @app.callback(

@@ -15,9 +15,14 @@ from datetime import datetime
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-QUESTION_ID = 'Q16'
-bar_colors = ["rgb(227,93,106)", "rgb(255,205,57)", "rgb(71,159,118)"]
-legend_labels = ['No, I have not considered applying to graduate studies in CS', 'Yes, I have considered but do not intend to apply to graduate studies in CS', 'Yes, I have considered and intend to apply (or am currently applying) to graduate studies in CS']
+# TODO: clean if time
+legend_labels = {'1': 'Strongly disagree', '2': 'Disagree', '3': 'Somewhat disagree', '4': 'Neither agree nor disagree', '5': 'Somewhat agree', '6': 'Agree', '7': 'Strongly agree'}
+bar_colors = ['rgba(102, 0, 0, 0.8)', 'rgba(204, 0, 0, 0.8)', 'rgba(234, 153, 153, 0.8)', 'rgba(217, 217, 217, 0.8)', 'rgba(164, 194, 244, 0.8)', 'rgba(60, 120, 216, 0.8)', 'rgba(28, 69, 135, 0.8)']
+
+# categories for visualization
+CATEGORIES_MAPPING = {
+    'Academically supportive':'Q21_1', 'Professionally supportive':'Q21_2', 'Emotionally supportive':'Q21_3'
+}
 
 app.layout = html.Div([
     html.Div([
@@ -32,6 +37,17 @@ app.layout = html.Div([
                 options=[{'label': i, 'value': i} for i in C.VIZ_AXES],
                 value='Gender',
                 clearable=False
+            )
+        ])
+    ], style={'width': '20%', 'display': 'inline-table', 'margin-top' : 20, 'margin-left' : 50}),
+    html.Div([
+        html.H4('Statement'),
+        html.Div([
+            dcc.Dropdown(
+                id='statement',
+                options=[{'label': i, 'value': i} for i in CATEGORIES_MAPPING],
+                value='Academically supportive',
+                optionHeight = 70
             )
         ])
     ], style={'width': '20%', 'display': 'inline-table', 'margin-top' : 20, 'margin-left' : 50}),
@@ -138,7 +154,7 @@ def is_sample_size_insufficient(dff, axis):
     # check number of responses per category is greater than minimum sample size
     return any(c < C.MIN_SAMPLE_SIZE for c in category_counts)
 
-def calculate_percentages(dff, axis, y_data):
+def calculate_percentages(dff, axis, y_data, QUESTION_ID):
     data = []
     for y_label in y_data:
         filt_dff = dff[dff[axis] == y_label]
@@ -155,7 +171,6 @@ def calculate_percentages(dff, axis, y_data):
                 value = round(count * 100 / total, 2)
             row.append(value)
         data.append(row)
-        print(y_label + ": " + str(total))
     return data
 
 @app.callback(
@@ -249,6 +264,7 @@ def filter_df(df, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filte
 @app.callback(
     Output('visualization', 'figure'),
     Input('axis', 'value'),
+    Input('statement', 'value'),
     Input('filter-gender-dropdown', 'value'),
     Input('filter-race-ethnicity-dropdown', 'value'),
     Input('filter-bgltq-dropdown', 'value'),
@@ -256,14 +272,17 @@ def filter_df(df, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filte
     Input('filter-class-year-dropdown', 'value'),
     Input('filter-school-dropdown', 'value'),
     Input('filter-concentration-dropdown', 'value'))
-def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter, 
+def update_graph(axis, statement, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter, 
     class_year_filter, school_filter, concentration_filter):
+    
+    QUESTION_ID = CATEGORIES_MAPPING[statement]
+
     dff = filter_df(D.AXIS_DF[axis], gender_filter, race_ethnicity_filter, bgltq_filter,
         fgli_filter, class_year_filter, school_filter, concentration_filter)
 
     fig = go.Figure()
     y_data = dff[axis].unique()[::-1]
-    x_data = calculate_percentages(dff, axis, y_data)
+    x_data = calculate_percentages(dff, axis, y_data, QUESTION_ID)
 
     # return empty plot if there is not enough data (or if figure is not yet implemented)
     if fig == None or is_sample_size_insufficient(dff, axis):
@@ -271,7 +290,7 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
 
     for row in range(len(x_data)):
         for col in range(len(x_data[0])):
-            hovertext = str(x_data[row][col]) + '% - ' + legend_labels[col]
+            hovertext = str(x_data[row][col]) + '% - ' + legend_labels[str(col+1)]
             fig.add_trace(go.Bar(
                 x=[x_data[row][col]], y=[row],
                 orientation='h',

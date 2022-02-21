@@ -1,3 +1,5 @@
+# change to gradient
+
 import constants as C
 import dataframe_init as D
 
@@ -15,9 +17,10 @@ from datetime import datetime
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-QUESTION_ID = 'Q16'
-bar_colors = ["rgb(227,93,106)", "rgb(255,205,57)", "rgb(71,159,118)"]
-legend_labels = ['No, I have not considered applying to graduate studies in CS', 'Yes, I have considered but do not intend to apply to graduate studies in CS', 'Yes, I have considered and intend to apply (or am currently applying) to graduate studies in CS']
+legend_labels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+bar_colors = ['rgba(182, 6, 6, 1)', 'rgba(211, 81, 0, 1)', 'rgba(233, 134, 0, 1)', 'rgba(247, 186, 0, 1)', 'rgba(252, 238, 6, 1)', 'rgba(196, 208, 0, 1)', 'rgba(145, 178, 0, 1)', 'rgba(99, 147, 0, 1)', 'rgba(56, 116, 2, 1)', 'rgba(8, 86, 2, 1)']
+bar_colors = bar_colors[::-1]
+QUESTION_ID = 'Q27_1'
 
 app.layout = html.Div([
     html.Div([
@@ -155,7 +158,6 @@ def calculate_percentages(dff, axis, y_data):
                 value = round(count * 100 / total, 2)
             row.append(value)
         data.append(row)
-        print(y_label + ": " + str(total))
     return data
 
 @app.callback(
@@ -266,8 +268,8 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
     x_data = calculate_percentages(dff, axis, y_data)
 
     # return empty plot if there is not enough data (or if figure is not yet implemented)
-    if fig == None or is_sample_size_insufficient(dff, axis):
-        return C.EMPTY_FIGURE
+    # if fig == None or is_sample_size_insufficient(dff, axis):
+    #     return C.EMPTY_FIGURE
 
     for row in range(len(x_data)):
         for col in range(len(x_data[0])):

@@ -144,9 +144,9 @@ html.Div([
                 id='question_option',
                 options=[{'label': i, 'value': i} for i in QUESTION_OPTIONS],
                 value=QUESTION_OPTIONS[0])
-        ])
+        ], style={'width': '50%', 'margin-left': '50px'})
     ],
-    style={'width': '30%', 'display': 'inline-table', 'margin-right' : 50}),
+    style={'width': '100%', 'display': 'inline-table', 'margin-top' : '15'}),
 
     dcc.Graph(id='visualization')
 ])
@@ -278,6 +278,9 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
     fig = make_subplots(rows=1, cols=len(names), specs = generateSpecs, subplot_titles = names)
     colNum = 1
 
+    text_annotations=[]
+    text_annotations.append(dict(font=dict(size=14)))
+
     for name in names:
         df = dff[dff[axis] == name]
         yes_num = df[df[QUESTION_ID].str.contains(question_option, na=False)].shape[0] #filters out yes respondents 
@@ -287,18 +290,23 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
         fig.add_trace(go.Pie(labels=['Yes', 'No'], values=y_n_values, textinfo='none',
                                 hoverinfo='label+percent', marker={
             'colors': [
-            'e2eafc',
-            '#9AACCF']}), row=1, col=colNum)
+            'rgb(71,159,118)', 'rgb(233,236,239)']}), row=1, col=colNum)
     
         colNum +=1
         
     # plot titles
     fig.update_layout(
-        title=QUESTION_ID,
-        font=dict(
-            family="Courier New, monospace",
-            size=15,
-            color="RebeccaPurple"
+        title='Which of the following reasons has influenced your decision to not write a senior thesis?',
+        annotations=text_annotations,
+        height=400,
+        margin=dict(l=0, r=0, t=20, b=30),
+        legend=dict(
+            yanchor="top",
+            y=2.2,
+            xanchor="left",
+            x=1.02,
+            itemclick=False,
+            itemdoubleclick=False
         )
     )
 
