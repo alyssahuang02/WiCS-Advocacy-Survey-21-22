@@ -19,13 +19,11 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 QUESTION_OPTIONS = [      
-    "I am not interested in computer science research",
-    "I cannot think of or decide on a thesis topic",
-    "I am unsure of or unable to find a suitable faculty advisor for my thesis",
-    "I am unaware of the processes or steps that must be taken in order to write a senior thesis",
-    "I am unavailable to commit the time to writing a thesis"]
+    "I didn't learn about opportunities relating to graduate studies until it was too late",
+    "I did not feel as if I had the resources to successfully apply to graduate school",
+    "Graduate school doesn't fit into my career path"]
 
-QUESTION_ID = 'Q19'
+QUESTION_ID = 'Q17'
 
 app.layout = html.Div([
     html.Div([
@@ -144,9 +142,9 @@ html.Div([
                 id='question_option',
                 options=[{'label': i, 'value': i} for i in QUESTION_OPTIONS],
                 value=QUESTION_OPTIONS[0])
-        ], style={'width': '50%', 'margin-left': '50px'})
+        ])
     ],
-    style={'width': '100%', 'display': 'inline-table', 'margin-top' : '15'}),
+    style={'width': '30%', 'display': 'inline-table', 'margin-right' : 50}),
 
     dcc.Graph(id='visualization')
 ])
@@ -278,35 +276,28 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
     fig = make_subplots(rows=1, cols=len(names), specs = generateSpecs, subplot_titles = names)
     colNum = 1
 
-    text_annotations=[]
-    text_annotations.append(dict(font=dict(size=14)))
-
     for name in names:
         df = dff[dff[axis] == name]
         yes_num = df[df[QUESTION_ID].str.contains(question_option, na=False)].shape[0] #filters out yes respondents 
         no_num = df[~(df[QUESTION_ID].str.contains(question_option, na=False))].shape[0] #filters our no respondents
         y_n_values = [yes_num,no_num]
+        print(name + ": " + str(yes_num + no_num))
 
         fig.add_trace(go.Pie(labels=['Yes', 'No'], values=y_n_values, textinfo='none',
                                 hoverinfo='label+percent', marker={
             'colors': [
-            'rgb(71,159,118)', 'rgb(233,236,239)']}), row=1, col=colNum)
+            'rgb(71,159,118)',
+            'rgb(233,236,239)']}), row=1, col=colNum)
     
         colNum +=1
         
     # plot titles
     fig.update_layout(
-        title='Which of the following reasons has influenced your decision to not write a senior thesis?',
-        annotations=text_annotations,
-        height=400,
-        margin=dict(l=0, r=0, t=20, b=30),
-        legend=dict(
-            yanchor="top",
-            y=2.2,
-            xanchor="left",
-            x=1.02,
-            itemclick=False,
-            itemdoubleclick=False
+        title=QUESTION_ID,
+        font=dict(
+            family="Courier New, monospace",
+            size=15,
+            color="RebeccaPurple"
         )
     )
 

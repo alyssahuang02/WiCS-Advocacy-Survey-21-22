@@ -19,13 +19,13 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 QUESTION_OPTIONS = [      
-    "I am not interested in computer science research",
-    "I cannot think of or decide on a thesis topic",
-    "I am unsure of or unable to find a suitable faculty advisor for my thesis",
-    "I am unaware of the processes or steps that must be taken in order to write a senior thesis",
-    "I am unavailable to commit the time to writing a thesis"]
+    'Close friends and family',
+    'Fellow students',
+    'Professional networks',
+    'Alumni networks',
+    'The Harvard Office of Career Services',]
 
-QUESTION_ID = 'Q19'
+q_id = 'Q29'
 
 app.layout = html.Div([
     html.Div([
@@ -143,10 +143,10 @@ html.Div([
             dcc.Dropdown(
                 id='question_option',
                 options=[{'label': i, 'value': i} for i in QUESTION_OPTIONS],
-                value=QUESTION_OPTIONS[0])
-        ], style={'width': '50%', 'margin-left': '50px'})
+                value='Close friends and family')
+        ])
     ],
-    style={'width': '100%', 'display': 'inline-table', 'margin-top' : '15'}),
+    style={'width': '30%', 'display': 'inline-table', 'margin-right' : 50}),
 
     dcc.Graph(id='visualization')
 ])
@@ -259,50 +259,48 @@ def filter_df(df, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filte
     Input('question_option', 'value'))
 def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter, 
     class_year_filter, school_filter, concentration_filter, question_option):
-    # get relevant dataframe according to axis
-    dff = filter_df(D.AXIS_DF[axis], gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter, class_year_filter, school_filter, concentration_filter)
-    
-    # names is used for labelling
-    names = list(dff[axis].unique())
-    
-    # new_category = []
-    
-    # for c in names:
-    #     category_df = dff[dff[axis] == c]
-    #     new_category.append(category_df) #total_cateogires = [Male_df,Non-male_df]
+     # get relevant dataframe according to axis
+    dff = filter_df(D.AXIS_DF[axis], gender_filter, race_ethnicity_filter, bgltq_filter, fgli_filter,
+        class_year_filter, school_filter, concentration_filter)
 
-    # print(len(new_category))
+    unique_categories = dff[axis].unique()
+    category_names = list(dff[axis].unique())
+    
+    new_category = []
+    
+    for c in unique_categories:
+        category_df = dff[dff[axis] == c]
+        new_category.append(category_df)
  
-    # implement figure   
-    generateSpecs = [[{"type": "pie"} for _ in names]]
-    fig = make_subplots(rows=1, cols=len(names), specs = generateSpecs, subplot_titles = names)
+    generateSpecs = [[{"type": "pie"} for _ in new_category]]
+    fig = make_subplots(rows=1, cols=len(new_category),specs = generateSpecs, subplot_titles = category_names)
     colNum = 1
-
+   
     text_annotations=[]
     text_annotations.append(dict(font=dict(size=14)))
 
-    for name in names:
-        df = dff[dff[axis] == name]
-        yes_num = df[df[QUESTION_ID].str.contains(question_option, na=False)].shape[0] #filters out yes respondents 
-        no_num = df[~(df[QUESTION_ID].str.contains(question_option, na=False))].shape[0] #filters our no respondents
+    for df in new_category: #new category = inc. in colnum
+        yes_num = df[df[q_id].str.contains(question_option, na=False)].shape[0] #filters out yes respondents 
+        no_num = df[~(df[q_id].str.contains(question_option, na=False))].shape[0] #filters our no respondents
         y_n_values = [yes_num,no_num]
-
-        fig.add_trace(go.Pie(labels=['Yes', 'No'], values=y_n_values, textinfo='none',
-                                hoverinfo='label+percent', marker={
-            'colors': [
-            'rgb(71,159,118)', 'rgb(233,236,239)']}), row=1, col=colNum)
-    
+        fig.add_trace(go.Pie(
+            labels = ['Yes', 'No'],
+            values = y_n_values,
+            textinfo='none',
+            hoverinfo='label+percent',
+            direction = 'clockwise',
+            sort = False,
+            marker={'colors': ['rgb(71,159,118)', 'rgb(233,236,239)']}
+        ), row=1, col=colNum)
         colNum +=1
-        
-    # plot titles
     fig.update_layout(
-        title='Which of the following reasons has influenced your decision to not write a senior thesis?',
+        title='When looking for internships and job opportunities, guidance and mentorship are accessible to me through…', 
         annotations=text_annotations,
-        height=400,
-        margin=dict(l=0, r=0, t=20, b=30),
+        height=300,
+        margin=dict(l=0, r=0, t=70, b=30),
         legend=dict(
-            yanchor="top",
-            y=2.2,
+            yanchor="bottom",
+            y=1.02,
             xanchor="left",
             x=1.02,
             itemclick=False,
@@ -310,10 +308,10 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
         )
     )
 
-    # return empty plot if there is not enough data (or if figure is not yet implemented)
+    # check for errors
     if fig == None or is_sample_size_insufficient(dff, axis):
-        return C.EMPTY_FIGURE
-
+        print("ERROR")
+    
     return fig
        
 if __name__ == '__main__':
