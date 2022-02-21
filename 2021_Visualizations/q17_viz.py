@@ -1,7 +1,3 @@
-# format better, make green, add title, show on same line
-
-# potentially do (at time of write up): see which ones are most interesting/have best results
-
 import constants as C
 import dataframe_init as D
 
@@ -23,17 +19,11 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 QUESTION_OPTIONS = [      
-    'I have already taken all of the CS courses I am interested in',
-    'I am not required to take any additional CS courses to fulfill my concentration/secondary',
-    'I am no longer interested in CS',
-    'CS course material is too difficult',
-    'CS courses are too time-intensive',
-    'CS courses are poorly designed or organized',
-    'I do not have any friends or community within the CS department',
-    'I do not feel supported by the CS department',
-    'I do not have enough space in my schedule']
+    "I didn't learn about opportunities relating to graduate studies until it was too late",
+    "I did not feel as if I had the resources to successfully apply to graduate school",
+    "Graduate school doesn't fit into my career path"]
 
-QUESTION_ID = 'Q15'
+QUESTION_ID = 'Q17'
 
 app.layout = html.Div([
     html.Div([
@@ -291,18 +281,19 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
         yes_num = df[df[QUESTION_ID].str.contains(question_option, na=False)].shape[0] #filters out yes respondents 
         no_num = df[~(df[QUESTION_ID].str.contains(question_option, na=False))].shape[0] #filters our no respondents
         y_n_values = [yes_num,no_num]
+        print(name + ": " + str(yes_num + no_num))
 
         fig.add_trace(go.Pie(labels=['Yes', 'No'], values=y_n_values, textinfo='none',
                                 hoverinfo='label+percent', marker={
             'colors': [
-            'e2eafc',
-            '#9AACCF']}), row=1, col=colNum)
+            'rgb(71,159,118)',
+            'rgb(233,236,239)']}), row=1, col=colNum)
     
         colNum +=1
         
     # plot titles
     fig.update_layout(
-        title='Question 15',
+        title=QUESTION_ID,
         font=dict(
             family="Courier New, monospace",
             size=15,
@@ -317,3 +308,4 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
     return fig
        
 if __name__ == '__main__':
+    app.run_server(debug=True)

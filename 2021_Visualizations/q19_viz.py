@@ -1,7 +1,3 @@
-# format better, make green, add title, show on same line
-
-# potentially do (at time of write up): see which ones are most interesting/have best results
-
 import constants as C
 import dataframe_init as D
 
@@ -23,17 +19,13 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 QUESTION_OPTIONS = [      
-    'I have already taken all of the CS courses I am interested in',
-    'I am not required to take any additional CS courses to fulfill my concentration/secondary',
-    'I am no longer interested in CS',
-    'CS course material is too difficult',
-    'CS courses are too time-intensive',
-    'CS courses are poorly designed or organized',
-    'I do not have any friends or community within the CS department',
-    'I do not feel supported by the CS department',
-    'I do not have enough space in my schedule']
+    "I am not interested in computer science research",
+    "I cannot think of or decide on a thesis topic",
+    "I am unsure of or unable to find a suitable faculty advisor for my thesis",
+    "I am unaware of the processes or steps that must be taken in order to write a senior thesis",
+    "I am unavailable to commit the time to writing a thesis"]
 
-QUESTION_ID = 'Q15'
+QUESTION_ID = 'Q19'
 
 app.layout = html.Div([
     html.Div([
@@ -152,9 +144,9 @@ html.Div([
                 id='question_option',
                 options=[{'label': i, 'value': i} for i in QUESTION_OPTIONS],
                 value=QUESTION_OPTIONS[0])
-        ])
+        ], style={'width': '50%', 'margin-left': '50px'})
     ],
-    style={'width': '30%', 'display': 'inline-table', 'margin-right' : 50}),
+    style={'width': '100%', 'display': 'inline-table', 'margin-top' : '15'}),
 
     dcc.Graph(id='visualization')
 ])
@@ -286,6 +278,9 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
     fig = make_subplots(rows=1, cols=len(names), specs = generateSpecs, subplot_titles = names)
     colNum = 1
 
+    text_annotations=[]
+    text_annotations.append(dict(font=dict(size=14)))
+
     for name in names:
         df = dff[dff[axis] == name]
         yes_num = df[df[QUESTION_ID].str.contains(question_option, na=False)].shape[0] #filters out yes respondents 
@@ -295,18 +290,23 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
         fig.add_trace(go.Pie(labels=['Yes', 'No'], values=y_n_values, textinfo='none',
                                 hoverinfo='label+percent', marker={
             'colors': [
-            'e2eafc',
-            '#9AACCF']}), row=1, col=colNum)
+            'rgb(71,159,118)', 'rgb(233,236,239)']}), row=1, col=colNum)
     
         colNum +=1
         
     # plot titles
     fig.update_layout(
-        title='Question 15',
-        font=dict(
-            family="Courier New, monospace",
-            size=15,
-            color="RebeccaPurple"
+        title='Which of the following reasons has influenced your decision to not write a senior thesis?',
+        annotations=text_annotations,
+        height=400,
+        margin=dict(l=0, r=0, t=20, b=30),
+        legend=dict(
+            yanchor="top",
+            y=2.2,
+            xanchor="left",
+            x=1.02,
+            itemclick=False,
+            itemdoubleclick=False
         )
     )
 
@@ -317,3 +317,4 @@ def update_graph(axis, gender_filter, race_ethnicity_filter, bgltq_filter, fgli_
     return fig
        
 if __name__ == '__main__':
+    app.run_server(debug=True)
