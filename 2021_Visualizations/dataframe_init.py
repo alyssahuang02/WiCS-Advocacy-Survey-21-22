@@ -19,7 +19,7 @@ DATETIME_COL = pd.to_datetime(CLEAN_DF['Q2'], errors='coerce')
 DATETIME_COL[DATETIME_COL.isna()] = pd.to_datetime(CLEAN_DF['Q2'][DATETIME_COL.isna()], format='%M/%y')
 CLEAN_DF['Q2_DT'] = DATETIME_COL
 CLEAN_DF = CLEAN_DF[(datetime(2021, 9, 1) <= CLEAN_DF['Q2_DT']) & (CLEAN_DF['Q2_DT'] <= datetime(2026, 8, 31))]
-print(CLEAN_DF.shape)
+#print(CLEAN_DF.shape)
 
 # Filter methods
 
@@ -176,9 +176,9 @@ NON_MALE_DF['Gender'] = 'Non-male'
 GENDER_DF = pd.concat([MALE_DF, NON_MALE_DF], ignore_index=True, sort=False)
 GENDER_DF = GENDER_DF[GENDER_DF['Gender'].isin(C.GENDER_CATEGORIES)]
 
-print("Males: " + str(MALE_DF.shape))
-print("Nonmales: " + str(NON_MALE_DF.shape))
-print()
+#print("Males: " + str(MALE_DF.shape))
+#print("Nonmales: " + str(NON_MALE_DF.shape))
+#print()
 
 # Race/Ethnicity
 ASIAN_DF = filter_asian(CLEAN_DF)
@@ -191,11 +191,11 @@ WHITE_DF = filter_white(CLEAN_DF)
 WHITE_DF['Race/Ethnicity'] = 'White'
 RACE_ETHNICITY_DF = pd.concat([ASIAN_DF, BLACK_DF, HISPANIC_DF, WHITE_DF], ignore_index=True, sort=False)
 
-print("Asian: " + str(ASIAN_DF.shape))
-print("Black: " + str(BLACK_DF.shape))
-print("Hispanic: " + str(HISPANIC_DF.shape))
-print("White: " + str(WHITE_DF.shape))
-print()
+#print("Asian: " + str(ASIAN_DF.shape))
+#print("Black: " + str(BLACK_DF.shape))
+#print("Hispanic: " + str(HISPANIC_DF.shape))
+#print("White: " + str(WHITE_DF.shape))
+#print()
 
 URM_DF = filter_urm(CLEAN_DF)
 URM_DF['Race/Ethnicity'] = 'URM'
@@ -204,9 +204,9 @@ NON_URM_DF['Race/Ethnicity'] = 'Non-URM'
 RACE_ETHNICITY_DF = pd.concat([URM_DF, NON_URM_DF], ignore_index=True, sort=False)
 RACE_ETHNICITY_DF = RACE_ETHNICITY_DF[RACE_ETHNICITY_DF['Race/Ethnicity'].isin(C.RACE_ETHNICITY_CATEGORIES)]
 
-print("URM: " + str(URM_DF.shape))
-print("Non-URM: " + str(NON_URM_DF.shape))
-print()
+#print("URM: " + str(URM_DF.shape))
+#print("Non-URM: " + str(NON_URM_DF.shape))
+#print()
 
 # BGLTQ+
 IS_BGLTQ_DF = filter_is_bgltq(CLEAN_DF)
@@ -216,9 +216,9 @@ IS_NOT_BGLTQ_DF['BGLTQ+'] = 'Non-BGLTQ+'
 BGLTQ_DF = pd.concat([IS_BGLTQ_DF, IS_NOT_BGLTQ_DF], ignore_index=True, sort=False)
 BGLTQ_DF = BGLTQ_DF[BGLTQ_DF['BGLTQ+'].isin(C.BGLTQ_CATEGORIES)]
 
-print("BGLTQ: " + str(IS_BGLTQ_DF.shape))
-print("Non-BGLTQ: " + str(IS_NOT_BGLTQ_DF.shape))
-print()
+#print("BGLTQ: " + str(IS_BGLTQ_DF.shape))
+#print("Non-BGLTQ: " + str(IS_NOT_BGLTQ_DF.shape))
+#print()
 
 # FGLI
 IS_FGLI_DF = filter_is_fgli(CLEAN_DF)
@@ -228,9 +228,9 @@ IS_NOT_FGLI_DF['FGLI'] = 'Non-FGLI'
 FGLI_DF = pd.concat([IS_FGLI_DF, IS_NOT_FGLI_DF], ignore_index=True, sort=False)
 FGLI_DF = FGLI_DF[FGLI_DF['FGLI'].isin(C.FGLI_CATEGORIES)]
 
-print("FGLI: " + str(IS_FGLI_DF.shape))
-print("Non-FGLI: " + str(IS_NOT_FGLI_DF.shape))
-print()
+#print("FGLI: " + str(IS_FGLI_DF.shape))
+#print("Non-FGLI: " + str(IS_NOT_FGLI_DF.shape))
+#print()
 
 # Class Year
 FIRSTYEAR_DF = filter_firstyear(CLEAN_DF)
@@ -244,11 +244,11 @@ SENIOR_DF['Class Year'] = 'Senior'
 CLASS_YEAR_DF = pd.concat([FIRSTYEAR_DF, SOPHOMORE_DF, JUNIOR_DF, SENIOR_DF], ignore_index=True, sort=False)
 CLASS_YEAR_DF = CLASS_YEAR_DF[CLASS_YEAR_DF['Class Year'].isin(C.CLASS_YEAR_CATEGORIES)]
 
-print("Freshman: " + str(FIRSTYEAR_DF.shape))
-print("Sophomore: " + str(SOPHOMORE_DF.shape))
-print("Junior: " + str(JUNIOR_DF.shape))
-print("Senior: " + str(SENIOR_DF.shape))
-print()
+#print("Freshman: " + str(FIRSTYEAR_DF.shape))
+#print("Sophomore: " + str(SOPHOMORE_DF.shape))
+#print("Junior: " + str(JUNIOR_DF.shape))
+#print("Senior: " + str(SENIOR_DF.shape))
+#print()
 
 # School
 # ARTS_HUMANITIES_DF = filter_arts_humanitites(CLEAN_DF)
@@ -269,9 +269,9 @@ NON_SEAS_DF['School'] = 'Non-SEAS'
 SCHOOL_DF = pd.concat([SEAS_DF, NON_SEAS_DF], ignore_index=True, sort=False)
 SCHOOL_DF = SCHOOL_DF[SCHOOL_DF['School'].isin(C.SCHOOL_CATEGORIES)]
 
-print("SEAS: " + str(SEAS_DF.shape))
-print("Non-SEAS: " + str(NON_SEAS_DF.shape))
-print()
+#print("SEAS: " + str(SEAS_DF.shape))
+#print("Non-SEAS: " + str(NON_SEAS_DF.shape))
+#print()
 
 # Disability
 IS_DIAGNOSED_DF = filter_is_diagnosed(CLEAN_DF)
@@ -281,8 +281,64 @@ IS_NOT_DIAGNOSED_DF['Disability'] = 'Non-Disability'
 DISABILITY_DF = pd.concat([IS_DIAGNOSED_DF, IS_NOT_DIAGNOSED_DF], ignore_index=True, sort=False)
 DISABILITY_DF = DISABILITY_DF[DISABILITY_DF['Disability'].isin(C.DISABILITY_CATEGORIES)]
 
-print("Disabled: " + str(IS_DIAGNOSED_DF.shape))
-print("Non-Disabled: " + str(IS_NOT_DIAGNOSED_DF.shape))
+#print("Disabled: " + str(IS_DIAGNOSED_DF.shape))
+#print("Non-Disabled: " + str(IS_NOT_DIAGNOSED_DF.shape))
+
+# CS Concentrator Stats
+CS_DF = filter_cs_conc(CLEAN_DF)
+MALE_CS_DF = filter_male(CS_DF)
+MALE_CS_DF['Gender'] = 'Male'
+NON_MALE_CS_DF = filter_non_male(CS_DF)
+NON_MALE_CS_DF['Gender'] = 'Non-male'
+print("Males in CS: " + str(MALE_CS_DF.shape))
+print("Nonmales in CS: " + str(NON_MALE_CS_DF.shape))
+
+ASIAN_CS_DF = filter_asian(CS_DF)
+ASIAN_CS_DF['Race/Ethnicity'] = 'Asian'
+BLACK_CS_DF = filter_black(CS_DF)
+BLACK_CS_DF['Race/Ethnicity'] = 'Black or African American'
+HISPANIC_CS_DF = filter_hispanic(CS_DF)
+HISPANIC_CS_DF['Race/Ethnicity'] = 'Hispanic or Latinx'
+WHITE_CS_DF = filter_white(CS_DF)
+WHITE_CS_DF['Race/Ethnicity'] = 'White'
+print("Asians in CS: " + str(ASIAN_CS_DF.shape))
+print("Blacks in CS: " + str(BLACK_CS_DF.shape))
+print("Hispanics in CS: " + str(HISPANIC_CS_DF.shape))
+print("Whites in CS: " + str(WHITE_CS_DF.shape))
+
+IS_BGLTQ_CS_DF = filter_is_bgltq(CS_DF)
+IS_BGLTQ_CS_DF['BGLTQ+'] = 'BGLTQ+'
+IS_NOT_BGLTQ_CS_DF = filter_is_non_bgltq(CS_DF)
+IS_NOT_BGLTQ_CS_DF['BGLTQ+'] = 'Non-BGLTQ+'
+print("BGLTQ in CS: " + str(IS_BGLTQ_CS_DF.shape))
+print("Non-BGLTQ in CS: " + str(IS_NOT_BGLTQ_CS_DF.shape))
+
+IS_FGLI_CS_DF = filter_is_fgli(CS_DF)
+IS_FGLI_CS_DF['FGLI'] = 'FGLI'
+IS_NOT_FGLI_CS_DF = filter_is_non_fgli(CS_DF)
+IS_NOT_FGLI_CS_DF['FGLI'] = 'Non-FGLI'
+print("FGLI in CS: " + str(IS_FGLI_CS_DF.shape))
+print("Non-FGLI in CS: " + str(IS_NOT_FGLI_CS_DF.shape))
+
+FIRSTYEAR_CS_DF = filter_firstyear(CS_DF)
+FIRSTYEAR_CS_DF['Class Year'] = 'First-year'
+SOPHOMORE_CS_DF = filter_sophomore(CS_DF)
+SOPHOMORE_CS_DF['Class Year'] = 'Sophomore'
+JUNIOR_CS_DF = filter_junior(CS_DF)
+JUNIOR_CS_DF['Class Year'] = 'Junior'
+SENIOR_CS_DF = filter_senior(CS_DF)
+SENIOR_CS_DF['Class Year'] = 'Senior'
+print("Freshmen in CS: " + str(FIRSTYEAR_CS_DF.shape))
+print("Sophomores in CS: " + str(SOPHOMORE_CS_DF.shape))
+print("Juniors in CS: " + str(JUNIOR_CS_DF.shape))
+print("Seniors in CS: " + str(SENIOR_CS_DF.shape))
+
+IS_DIAGNOSED_CS_DF = filter_is_diagnosed(CS_DF)
+IS_DIAGNOSED_CS_DF['Disability'] = 'Disability'
+IS_NOT_DIAGNOSED_CS_DF = filter_is_non_diagnosed(CS_DF)
+IS_NOT_DIAGNOSED_CS_DF['Disability'] = 'Non-Disability'
+print("Disabled in CS: " + str(IS_DIAGNOSED_CS_DF.shape))
+print("Non-Disabled in CS: " + str(IS_NOT_DIAGNOSED_CS_DF.shape))
 
 #print(SCHOOL_DF)
 AXIS_DF = {
