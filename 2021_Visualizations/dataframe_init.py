@@ -19,6 +19,7 @@ DATETIME_COL = pd.to_datetime(CLEAN_DF['Q2'], errors='coerce')
 DATETIME_COL[DATETIME_COL.isna()] = pd.to_datetime(CLEAN_DF['Q2'][DATETIME_COL.isna()], format='%M/%y')
 CLEAN_DF['Q2_DT'] = DATETIME_COL
 CLEAN_DF = CLEAN_DF[(datetime(2021, 9, 1) <= CLEAN_DF['Q2_DT']) & (CLEAN_DF['Q2_DT'] <= datetime(2026, 8, 31))]
+print(CLEAN_DF.shape)
 
 # Filter methods
 
